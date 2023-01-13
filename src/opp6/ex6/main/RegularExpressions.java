@@ -53,4 +53,9 @@ public class RegularExpressions {
     public static Pattern COLON_PATTERN = Pattern.compile(
             POSSIBLE_SPACE + COLON + POSSIBLE_SPACE + "$");
     public static Pattern COMA_PATTERN = Pattern.compile(POSSIBLE_SPACE + COMA);
+    public static Pattern INT_PATTERN = Pattern.compile(IS_INT);
+    public static Pattern DOUBLE_PATTERN = Pattern.compile(IS_DOUBLE);
+    public static Pattern BOOLEAN_PATTERN = Pattern.compile(IS_BOOLEAN);
+    public static Pattern CHAR_PATTERN = Pattern.compile(IS_CHAR);
+    public static Pattern STRING_PATTERN = Pattern.compile(IS_STRING);
 }

@@ -2,7 +2,6 @@ package opp6.ex6.main;
 
 import java.util.HashMap;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static opp6.ex6.main.RegularExpressions.*;
 
@@ -29,73 +28,41 @@ public class HashMapVariable {
         }
     }
 
-    public void createVariable(String line, boolean global) { // throws InvalidValue / WrongSyntax
-        String type = null;
-        String name = null;
-        boolean finalVariable = false;
-        // check final
-        Matcher matcher = FINAL_PATTERN.matcher(line);
-        if (matcher.lookingAt()){
-            finalVariable = true;
-            line = line.substring(matcher.end());
-        }
-        // check type
-        matcher = TYPE_PATTERN.matcher(line);
-        if (matcher.lookingAt()) {
-            type = matcher.group(1);
-            line = line.substring(matcher.end());
-        } else {
-            System.out.println("raise error");
-        }
 
-        //check name
-        matcher = VAR_NAME_PATTERN.matcher(line);
+    /**
+     * get a line that was already compiled and the next 1 or 2 words should be a variable and an
+     * assignment or a variable without an assignment
+     * @param line the current line to compile
+     * @param type the type of variable
+     * @param global is this variable global
+     * @param finalVariable is this variable final
+     * @return the line after the variable declaration
+     */
+    public String addVariableFromLineStart(String line, String type, boolean global, boolean finalVariable){
+        // throws InvalidValue / WrongSyntax
+        // check type
+        String name = "";
+        Matcher matcher = VAR_NAME_PATTERN.matcher(line);
         if (matcher.lookingAt()) {
             name = matcher.group(1);
             line = line.substring(matcher.end());
         } else {
             System.out.println("raise error");
         }
-
-        Variable variable = VariableFactory.createVariable(type, global, finalVariable);
-
+        Variable variable = VariableFactory.createVariable(type, global);
         matcher = ASSIGN_PATTERN.matcher(line);
         this.currentScope.put(name, variable);
         if (matcher.lookingAt()) {
             variable.setValue(matcher.group(1), this);
+            variable.setFinale(finalVariable); // set final to true only after value assignment
             line = line.substring(matcher.end());
-        }
-        matcher = COMA_PATTERN.matcher(line);
-        while (matcher.lookingAt()) {
-            matcher = VAR_NAME_PATTERN.matcher(line);
-            if (matcher.lookingAt()) {
-                name = matcher.group(1);
-                line = line.substring(matcher.end());
-            } else {
+        } else {
+            if (finalVariable) { // if it's a final variable there must be assignment
                 System.out.println("raise error");
             }
-
-            variable = VariableFactory.createVariable(type, global, finalVariable);
-
-            matcher = ASSIGN_PATTERN.matcher(line);
-            this.currentScope.put(name, variable);
-            if (matcher.lookingAt()) {
-                variable.setValue(matcher.group(1), this);
-                line = line.substring(matcher.end());
-            }
         }
-        matcher = COLON_PATTERN.matcher(line);
-        if (matcher.lookingAt()) {
-            return;
-        } else {
-            System.out.println("raise error");
-        }
-
-        //TODO: analyze line (decide if its legal) and create a new variable from it
-        //TODO: need to handle multi declarations in 1 line
-        //TODO: use the factory and add to the current map
+        return line;
     }
-
     public static boolean isLineVariableDeclaration(String line){
         for (String type : ALLOWED_TYPES){
             if (line.startsWith(type)){

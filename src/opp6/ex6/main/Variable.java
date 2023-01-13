@@ -5,17 +5,17 @@ import java.util.regex.Pattern;
 public class Variable {
     private final String type;
     private final boolean global;
-    private final boolean finalVariable;
+    private boolean finalVariable;
     private boolean value;
-    private String[] valueRegex; // its a list so we can support double to be assigned with int
+    private Pattern[] typesPatterns; // its a list so we can support double to be assigned with int and double
     private String[] allowedTypesAssignment;
 
-    public Variable(String type, boolean global, boolean finalVariable,  String[] valueRegex,
+    public Variable(String type, boolean global,  Pattern[] typesPatterns,
                     String[] allowedTypesAssignment) {
         this.type = type;
         this.global = global;
-        this.finalVariable = finalVariable;
-        this.valueRegex = valueRegex;
+        this.finalVariable = false;
+        this.typesPatterns = typesPatterns;
         this.allowedTypesAssignment = allowedTypesAssignment;
         this.value = false;
     }
@@ -35,5 +35,36 @@ public class Variable {
     public void setValue(String value, HashMapVariable map) {
         // throws invalidValueException or VariableDoesNotExist (for variable assignment)
         //TODO: analyze the value string, throw exception if its not legal
+        if (this.finalVariable){ // cant assign values to final variables
+            System.out.println("raise error");
+        }
+        for (Pattern p : this.typesPatterns) { //if it's a valid value to assign
+            if (p.matcher(value).matches()){
+                this.value = true;
+                return;
+            }
+        }
+        if (map.getCurrentScope(value) != null) { // if there is a current scope variable - its deciding
+            if (map.getCurrentScope(value).getValue()){ // TODO: check its its correct type
+                this.value = true;
+            } else {
+                System.out.println("raise error");
+            }
+        } else { // if there is only outer scope variable - only then its deciding
+            if (map.getOuterScope(value) != null) { // TODO: check its its correct type
+                if (map.getOuterScope(value).getValue()){
+                    this.value = true;
+                } else {
+                    System.out.println("raise error");
+                }
+            }
+        }
+    }
+
+    public void setFinale(boolean finalVariable) {
+        if (this.finalVariable){
+            return;
+        }
+        this.finalVariable = finalVariable;
     }
 }

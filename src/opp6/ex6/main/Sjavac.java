@@ -3,6 +3,8 @@ package opp6.ex6.main;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.regex.Matcher;
+
 import static opp6.ex6.main.RegularExpressions.*;
 
 //test
@@ -44,9 +46,33 @@ public class Sjavac {
     }
 
     private static void compileVariableDeclaration(String line, boolean global, HashMapVariable map) {
-        map.createVariable(line, global);
-        //TODO: handle a variable declaration. assumes that the first word is final or a valid type
-        //TODO: use HashMapVariable.createVariable function
+        String type = null;
+        boolean finalVariable = false;
+        // check final
+        Matcher matcher = FINAL_PATTERN.matcher(line);
+        if (matcher.lookingAt()){
+            finalVariable = true;
+            line = line.substring(matcher.end());
+        }
+        // check type
+        matcher = TYPE_PATTERN.matcher(line);
+        if (matcher.lookingAt()) {
+            type = matcher.group(1);
+            line = line.substring(matcher.end());
+        } else {
+            System.out.println("raise error");
+        }
+        // check for variables
+        line = map.addVariableFromLineStart(line, type, global, finalVariable);
+        matcher = COMA_PATTERN.matcher(line);
+        // if there is "," then there is another variable
+        while (matcher.lookingAt()) {
+            line = map.addVariableFromLineStart(line, type, global, finalVariable);
+        }
+        matcher = COLON_PATTERN.matcher(line);
+        if (!matcher.lookingAt()) {  // end of line must be ;
+            System.out.println("raise error");
+        }
     }
 
     private static void functionsSearch(String path, HashMapVariable map) {  // throws InvalidValue / WrongSyntax

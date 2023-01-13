@@ -17,9 +17,9 @@ public class RegularExpressions {
                                 FALSE = "false",
                                 RETURN = "return";
     public static final String  IS_INT = "([-\\+]?\\d+)",
-                                IS_DOUBLE = "(\\d*.\\d+) | (\\d+.\\d*)",
+                                IS_DOUBLE = "(\\d*.\\d+)|(\\d+.\\d*)",
                                 IS_CHAR = "('.')",
-                                IS_STRING = "(\".*\")",
+                                IS_STRING = "(\"[^,'\"\\\\]*\")",
                                 IS_BOOLEAN = "(" + TRUE + "|" + FALSE + ")";
 
     public static final String EQUAL = "=",

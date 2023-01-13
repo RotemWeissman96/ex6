@@ -1,8 +1,8 @@
 package opp6.ex6.main;
 
 public class VariableFactory {
-    private static final String[] INT_VALID_TYPES = {"double", "int"};
-    private static final String[] DOUBLE_VALID_TYPES = {"int"};
+    private static final String[] INT_VALID_TYPES = {"int"};
+    private static final String[] DOUBLE_VALID_TYPES = {"double", "int"};
     private static final String[] CHAR_VALID_TYPES = {"char"};
     private static final String[] STRING_VALID_TYPES = {"String"};
     private static final String[] BOOLEAN_VALID_TYPES = {"boolean", "double", "int"};
@@ -11,8 +11,6 @@ public class VariableFactory {
     private static final String CHAR_REGEX = "";
     private static final String STRING_REGEX = "";
     private static final String BOOLEAN_REGEX = "";
-
-
 
     public static Variable createVariable(String type, boolean global, boolean finalVariable){
         String[] validTypes = validTypeAssignment(type);

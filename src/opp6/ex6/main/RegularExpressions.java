@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 public class RegularExpressions {
     public static final String TYPE = "(int|double|String|char|boolean)";
-    public static final String INT = ("int"),
+    public static final String INT = "int",
             DOUBLE = "double",
             STRING = "String",
             CHAR = "char",
@@ -17,25 +17,31 @@ public class RegularExpressions {
             TRUE = "true",
             FALSE = "false",
             RETURN = "return";
-    public static final String IS_INT = "(\\s*[-\\+]?*\\d+)",
-            IS_DOUBLE = "(" +"(" + IS_INT + ")" + "|"+"(\\d*.\\d+)"+ ")",
-            IS_CHAR = "'.'\\s*",
-            IS_STRING = "\".*\"\\s*",
-            IS_BOOLEAN = IS_INT + "|" + IS_DOUBLE + "|" + TRUE + "|" + FALSE;
+    public static final String IS_INT = "([-\\+]?*\\d+)",
+            IS_DOUBLE = "(\\d*.\\d+) | (\\d+.\\d*)",
+            IS_CHAR = ".",
+            IS_STRING = "\".*\"",
+            IS_BOOLEAN = TRUE + "|" + FALSE;
 
-    public static final String EQUAL = "=", WHITE_SPACE_REGEX = "\\s+", COLON ="\\s*;\\s*";
-    public static final String ASSIGNMENT = "\\s*(\\S+)\\s*";
-    public static final String ASSIGNMENT = "\\s*(\\S+)\\s*";
-
-
-//    public static final String VAR_NAME_REGEX = "\\s*(([a-zA-Z]+\\w*)|(_\\w+)|(__+\\w*))\\s*_[_\\w]+";
-    public static final String VAR_NAME_REGEX = "(\\s*(?:[a-zA-Z][_\\w]*)|(?:_[_\\w]+)\\s*)";
-
-    public static final String VARIABLE_ASSIGN =
-            TYPE + WHITE_SPACE_REGEX + VAR_NAME_REGEX + EQUAL + ASSIGNMENT + COLON;
+    public static final String EQUAL = "=", MANDATORY_SPACE = "\\s", POSSIBLE_SPACE = "\\s*", COLON =";";
+    public static final String ASSIGNMENT_VALUE = "(\\S+)";
+    public static final String VAR_NAME_REGEX = "((?:[a-zA-Z][_\\w]*)|(?:_[_\\w]+))";
 
 
-    public static Pattern LEGAL_VARIABLE = Pattern.compile(VARIABLE_ASSIGN);
 
+//    public static final String SINGLE_ASSIGNMENT =
+//            VAR_NAME_REGEX + POSSIBLE_SPACE + EQUAL + POSSIBLE_SPACE + ASSIGNMENT_VALUE;
+//    public static final String SINGLE_VARIABLE_DECLARATION_ASSIGN =
+//            TYPE + MANDATORY_SPACE + SINGLE_ASSIGNMENT + POSSIBLE_SPACE + COLON + POSSIBLE_SPACE;
+//    public static final String SINGLE_VARIABLE_DECLARATION =
+//            TYPE + MANDATORY_SPACE + VAR_NAME_REGEX + POSSIBLE_SPACE + COLON + POSSIBLE_SPACE;
+//    public static final String MULTI_VARIABLE_DECLARATION_ASSIGN =
+//            TYPE + MANDATORY_SPACE + SINGLE_ASSIGNMENT + POSSIBLE_SPACE + COLON + POSSIBLE_SPACE;
+//    public static final String MULTI_VARIABLE_DECLARATION =
+//            TYPE + MANDATORY_SPACE + VAR_NAME_REGEX + POSSIBLE_SPACE + COLON + POSSIBLE_SPACE;
+//
+//
+//    public static Pattern LEGAL_VARIABLE = Pattern.compile(VARIABLE_ASSIGN);
+    public static Pattern FINAL_PATTERN = Pattern.compile(POSSIBLE_SPACE + FINAL + MANDATORY_SPACE);
 
 }

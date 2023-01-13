@@ -30,29 +30,34 @@ public class HashMapVariable {
     }
 
     public void createVariable(String line, boolean global) { // throws InvalidValue / WrongSyntax
-        Matcher matcher = null;
         String type= null;
-
-        if(line.startsWith(INT)){
-            matcher = LEGAL_INT_VARIABLE.matcher(line);
-            type = INT;
-        } else if (line.startsWith(DOUBLE)) {
-            matcher = LEGAL_DOUBLE_VARIABLE.matcher(line);
-            type = DOUBLE;
-        } else if (line.startsWith(STRING)) {
-            matcher = LEGAL_STRING_VARIABLE.matcher(line);
-            type = STRING;
-        } else if (line.startsWith(CHAR)) {
-            matcher = LEGAL_CHAR_VARIABLE.matcher(line);
-            type = CHAR;
-        } else if (line.startsWith(BOOLEAN)) {
-            matcher = LEGAL_BOOLEAN_VARIABLE.matcher(line);
-            type = BOOLEAN;
+        boolean finalVariable = false;
+        Matcher matcher = FINAL_PATTERN.matcher(line);
+        if (matcher.lookingAt()){
+            finalVariable = true;
+            line = line.substring(matcher.end());
         }
+
+//        if(line.startsWith(INT)){
+//            matcher = LEGAL_INT_VARIABLE.matcher(line);
+//            type = INT;
+//        } else if (line.startsWith(DOUBLE)) {
+//            matcher = LEGAL_DOUBLE_VARIABLE.matcher(line);
+//            type = DOUBLE;
+//        } else if (line.startsWith(STRING)) {
+//            matcher = LEGAL_STRING_VARIABLE.matcher(line);
+//            type = STRING;
+//        } else if (line.startsWith(CHAR)) {
+//            matcher = LEGAL_CHAR_VARIABLE.matcher(line);
+//            type = CHAR;
+//        } else if (line.startsWith(BOOLEAN)) {
+//            matcher = LEGAL_BOOLEAN_VARIABLE.matcher(line);
+//            type = BOOLEAN;
+//        }
 
         assert (matcher != null);
         if (matcher.matches()){
-            Variable variable = VariableFactory.createVariable(type, global, false);
+            Variable variable = VariableFactory.createVariable(type, global, finalVariable);
         }
         //TODO: analyze line (decide if its legal) and create a new variable from it
         //TODO: need to handle multi declarations in 1 line

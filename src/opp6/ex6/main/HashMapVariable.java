@@ -32,12 +32,22 @@ public class HashMapVariable {
     public void createVariable(String line, boolean global) { // throws InvalidValue / WrongSyntax
         String type= null;
         boolean finalVariable = false;
+        // check type
         Matcher matcher = FINAL_PATTERN.matcher(line);
         if (matcher.lookingAt()){
             finalVariable = true;
             line = line.substring(matcher.end());
         }
-
+        // check type
+        matcher = TYPE_PATTERN.matcher(line);
+        if (matcher.lookingAt()) {
+            type = matcher.group(1);
+            line = line.substring(matcher.end());
+        } else {
+            System.out.println("raise error");
+        }
+        //check type
+        matcher = VAR_NAME_PATTERN.matcher(line);
 //        if(line.startsWith(INT)){
 //            matcher = LEGAL_INT_VARIABLE.matcher(line);
 //            type = INT;

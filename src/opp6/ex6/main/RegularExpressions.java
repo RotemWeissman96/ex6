@@ -4,24 +4,23 @@ import java.util.regex.Pattern;
 
 public class RegularExpressions {
     public static final String TYPE = "(int|double|String|char|boolean)";
-    public static final String INT = "int",
-            DOUBLE = "double",
-            STRING = "String",
-            CHAR = "char",
-            BOOLEAN = "boolean";
-    public static final
-            String VOID = "void",
-            FINAL = "final",
-            IF = "if",
-            WHILE = "while",
-            TRUE = "true",
-            FALSE = "false",
-            RETURN = "return";
-    public static final String IS_INT = "([-\\+]?*\\d+)",
-            IS_DOUBLE = "(\\d*.\\d+) | (\\d+.\\d*)",
-            IS_CHAR = ".",
-            IS_STRING = "\".*\"",
-            IS_BOOLEAN = TRUE + "|" + FALSE;
+    public static final String  INT = "int",
+                                DOUBLE = "double",
+                                STRING = "String",
+                                CHAR = "char",
+                                BOOLEAN = "boolean";
+    public static final String  VOID = "void",
+                                FINAL = "final",
+                                IF = "if",
+                                WHILE = "while",
+                                TRUE = "true",
+                                FALSE = "false",
+                                RETURN = "return";
+    public static final String  IS_INT = "([-\\+]?*\\d+)",
+                                IS_DOUBLE = "(\\d*.\\d+) | (\\d+.\\d*)",
+                                IS_CHAR = ".",
+                                IS_STRING = "\".*\"",
+                                IS_BOOLEAN = TRUE + "|" + FALSE;
 
     public static final String EQUAL = "=", MANDATORY_SPACE = "\\s", POSSIBLE_SPACE = "\\s*", COLON =";";
     public static final String ASSIGNMENT_VALUE = "(\\S+)";
@@ -43,5 +42,7 @@ public class RegularExpressions {
 //
 //    public static Pattern LEGAL_VARIABLE = Pattern.compile(VARIABLE_ASSIGN);
     public static Pattern FINAL_PATTERN = Pattern.compile(POSSIBLE_SPACE + FINAL + MANDATORY_SPACE);
+    public static Pattern TYPE_PATTERN = Pattern.compile(POSSIBLE_SPACE + TYPE + MANDATORY_SPACE);
+    public static Pattern VAR_NAME_PATTERN = Pattern.compile(POSSIBLE_SPACE + VAR_NAME_REGEX);
 
 }

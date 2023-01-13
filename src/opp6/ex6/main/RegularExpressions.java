@@ -22,7 +22,11 @@ public class RegularExpressions {
                                 IS_STRING = "\".*\"",
                                 IS_BOOLEAN = TRUE + "|" + FALSE;
 
-    public static final String EQUAL = "=", MANDATORY_SPACE = "\\s", POSSIBLE_SPACE = "\\s*", COLON =";";
+    public static final String EQUAL = "=",
+                                MANDATORY_SPACE = "\\s",
+                                POSSIBLE_SPACE = "\\s*",
+                                COLON =";",
+                                COMA = ",";
     public static final String ASSIGNMENT_VALUE = "(\\S+)";
     public static final String VAR_NAME_REGEX = "((?:[a-zA-Z][_\\w]*)|(?:_[_\\w]+))";
 
@@ -44,5 +48,9 @@ public class RegularExpressions {
     public static Pattern FINAL_PATTERN = Pattern.compile(POSSIBLE_SPACE + FINAL + MANDATORY_SPACE);
     public static Pattern TYPE_PATTERN = Pattern.compile(POSSIBLE_SPACE + TYPE + MANDATORY_SPACE);
     public static Pattern VAR_NAME_PATTERN = Pattern.compile(POSSIBLE_SPACE + VAR_NAME_REGEX);
-
+    public static Pattern ASSIGN_PATTERN = Pattern.compile(
+            POSSIBLE_SPACE + EQUAL + POSSIBLE_SPACE +  ASSIGNMENT_VALUE);
+    public static Pattern COLON_PATTERN = Pattern.compile(
+            POSSIBLE_SPACE + COLON + POSSIBLE_SPACE + "$");
+    public static Pattern COMA_PATTERN = Pattern.compile(POSSIBLE_SPACE + COMA);
 }

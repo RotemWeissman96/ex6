@@ -30,9 +30,10 @@ public class HashMapVariable {
     }
 
     public void createVariable(String line, boolean global) { // throws InvalidValue / WrongSyntax
-        String type= null;
+        String type = null;
+        String name = null;
         boolean finalVariable = false;
-        // check type
+        // check final
         Matcher matcher = FINAL_PATTERN.matcher(line);
         if (matcher.lookingAt()){
             finalVariable = true;
@@ -46,29 +47,50 @@ public class HashMapVariable {
         } else {
             System.out.println("raise error");
         }
-        //check type
-        matcher = VAR_NAME_PATTERN.matcher(line);
-//        if(line.startsWith(INT)){
-//            matcher = LEGAL_INT_VARIABLE.matcher(line);
-//            type = INT;
-//        } else if (line.startsWith(DOUBLE)) {
-//            matcher = LEGAL_DOUBLE_VARIABLE.matcher(line);
-//            type = DOUBLE;
-//        } else if (line.startsWith(STRING)) {
-//            matcher = LEGAL_STRING_VARIABLE.matcher(line);
-//            type = STRING;
-//        } else if (line.startsWith(CHAR)) {
-//            matcher = LEGAL_CHAR_VARIABLE.matcher(line);
-//            type = CHAR;
-//        } else if (line.startsWith(BOOLEAN)) {
-//            matcher = LEGAL_BOOLEAN_VARIABLE.matcher(line);
-//            type = BOOLEAN;
-//        }
 
-        assert (matcher != null);
-        if (matcher.matches()){
-            Variable variable = VariableFactory.createVariable(type, global, finalVariable);
+        //check name
+        matcher = VAR_NAME_PATTERN.matcher(line);
+        if (matcher.lookingAt()) {
+            name = matcher.group(1);
+            line = line.substring(matcher.end());
+        } else {
+            System.out.println("raise error");
         }
+
+        Variable variable = VariableFactory.createVariable(type, global, finalVariable);
+
+        matcher = ASSIGN_PATTERN.matcher(line);
+        this.currentScope.put(name, variable);
+        if (matcher.lookingAt()) {
+            variable.setValue(matcher.group(1), this);
+            line = line.substring(matcher.end());
+        }
+        matcher = COMA_PATTERN.matcher(line);
+        while (matcher.lookingAt()) {
+            matcher = VAR_NAME_PATTERN.matcher(line);
+            if (matcher.lookingAt()) {
+                name = matcher.group(1);
+                line = line.substring(matcher.end());
+            } else {
+                System.out.println("raise error");
+            }
+
+            variable = VariableFactory.createVariable(type, global, finalVariable);
+
+            matcher = ASSIGN_PATTERN.matcher(line);
+            this.currentScope.put(name, variable);
+            if (matcher.lookingAt()) {
+                variable.setValue(matcher.group(1), this);
+                line = line.substring(matcher.end());
+            }
+        }
+        matcher = COLON_PATTERN.matcher(line);
+        if (matcher.lookingAt()) {
+            return;
+        } else {
+            System.out.println("raise error");
+        }
+
         //TODO: analyze line (decide if its legal) and create a new variable from it
         //TODO: need to handle multi declarations in 1 line
         //TODO: use the factory and add to the current map

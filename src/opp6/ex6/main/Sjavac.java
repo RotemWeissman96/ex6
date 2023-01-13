@@ -40,8 +40,9 @@ public class Sjavac {
                     compileVariableDeclaration(line, true, map);
                     continue;
                 }
+                compileAssignment(line, map);
                 //TODO: check if this line is an assignment (without declaration) and call the function
-                System.out.println("raise error 10");
+//                System.out.println("raise error 10");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -116,8 +117,47 @@ public class Sjavac {
      * @param map
      */
     private static void compileAssignment(String line, HashMapVariable map) { // throws InvalidValue / WrongSyntax
+        line = handlingCompileAssignment(line, map);
+        Matcher matcher = COMA_PATTERN.matcher(line);
+        while (matcher.lookingAt()){
+            line = line.substring(matcher.end());
+            line = handlingCompileAssignment(line, map);
+            matcher = COMA_PATTERN.matcher(line);
+        }
         //TODO: compile assignment, check if variable exist in current scope, use Variable.setValue function
         //TODO: handle an uninitialized global or outer scope variable as a new variable in current scope
+    }
+
+    private static String handlingCompileAssignment(String line, HashMapVariable map){
+        Variable localVariable = null, globalVariable = null, variable = null;
+        String name = null;
+        Matcher matcher = VAR_NAME_PATTERN.matcher(line);
+        if (matcher.lookingAt()) {
+            name = matcher.group(1);
+            localVariable = map.getCurrentScope(name);
+            globalVariable = map.getOuterScope(name);
+            if(localVariable != null){
+                variable = localVariable;
+            }else {
+                variable = globalVariable;
+            }
+            if(variable == null){
+                System.out.println("raise error 11");
+            }
+            line = line.substring(matcher.end());
+        } else {
+            System.out.println("raise error12");
+        }
+        matcher = ASSIGN_PATTERN.matcher(line);
+        if(globalVariable != null && localVariable == null){
+            map.setCurrentScope(name, globalVariable);
+        }
+        if (matcher.lookingAt()) {
+            assert variable != null;
+            variable.setValue(matcher.group(1), map);
+            line = line.substring(matcher.end());
+        }
+        return line;
     }
 
 

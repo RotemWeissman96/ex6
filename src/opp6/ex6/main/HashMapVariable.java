@@ -102,4 +102,7 @@ public class HashMapVariable {
         System.out.println("\n==outerScope==\n");
         this.outerScope.forEach((key, value) -> System.out.println(key + ":" + value.getType()));
     }
+    public void setCurrentScope(String name, Variable variable){
+        this.currentScope.put(name,variable);
+    }
 }

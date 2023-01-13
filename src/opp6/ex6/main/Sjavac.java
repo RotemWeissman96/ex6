@@ -15,6 +15,7 @@ public class Sjavac {
         try {
             HashMapVariable map = new HashMapVariable();
             globalSearch(args[1], map);
+            map.printMaps();
             functionsSearch(args[1], map);
         } catch (IOException e) {
             e.printStackTrace(); // print 2
@@ -37,8 +38,10 @@ public class Sjavac {
                 }
                 if (HashMapVariable.isLineVariableDeclaration(line)) {  // check if its a global declaration
                     compileVariableDeclaration(line, true, map);
+                    continue;
                 }
                 //TODO: check if this line is an assignment (without declaration) and call the function
+                System.out.println("raise error 10");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -60,18 +63,20 @@ public class Sjavac {
             type = matcher.group(1);
             line = line.substring(matcher.end());
         } else {
-            System.out.println("raise error");
+            System.out.println("raise error 3 ");
         }
         // check for variables
         line = map.addVariableFromLineStart(line, type, global, finalVariable);
         matcher = COMA_PATTERN.matcher(line);
         // if there is "," then there is another variable
         while (matcher.lookingAt()) {
+            line = line.substring(matcher.end());
             line = map.addVariableFromLineStart(line, type, global, finalVariable);
+            matcher = COMA_PATTERN.matcher(line);
         }
         matcher = COLON_PATTERN.matcher(line);
         if (!matcher.lookingAt()) {  // end of line must be ;
-            System.out.println("raise error");
+            System.out.println("raise error 4");
         }
     }
 

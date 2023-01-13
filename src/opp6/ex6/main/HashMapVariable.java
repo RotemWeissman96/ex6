@@ -1,6 +1,7 @@
 package opp6.ex6.main;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 import static opp6.ex6.main.RegularExpressions.*;
@@ -45,9 +46,12 @@ public class HashMapVariable {
         Matcher matcher = VAR_NAME_PATTERN.matcher(line);
         if (matcher.lookingAt()) {
             name = matcher.group(1);
+            if (this.currentScope.containsKey(name)){
+                System.out.println("raise error 8");
+            }
             line = line.substring(matcher.end());
         } else {
-            System.out.println("raise error");
+            System.out.println("raise error 2");
         }
         Variable variable = VariableFactory.createVariable(type, global);
         matcher = ASSIGN_PATTERN.matcher(line);
@@ -58,7 +62,7 @@ public class HashMapVariable {
             line = line.substring(matcher.end());
         } else {
             if (finalVariable) { // if it's a final variable there must be assignment
-                System.out.println("raise error");
+                System.out.println("raise error 1");
             }
         }
         return line;
@@ -89,5 +93,12 @@ public class HashMapVariable {
             return outerScope.get(name);
         }
         return null; // throw VariableDoNotExist
+    }
+
+    public void printMaps(){
+        System.out.println("currentScope");
+        this.currentScope.forEach((key, value) -> System.out.println(key + ":" + value.getType()));
+        System.out.println("outerScope");
+        this.outerScope.forEach((key, value) -> System.out.println(key + ":" + value.getType()));
     }
 }

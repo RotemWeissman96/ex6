@@ -16,18 +16,20 @@ public class RegularExpressions {
                                 TRUE = "true",
                                 FALSE = "false",
                                 RETURN = "return";
-    public static final String  IS_INT = "([-\\+]?*\\d+)",
+    public static final String  IS_INT = "([-\\+]?\\d+)",
                                 IS_DOUBLE = "(\\d*.\\d+) | (\\d+.\\d*)",
-                                IS_CHAR = ".",
-                                IS_STRING = "\".*\"",
-                                IS_BOOLEAN = TRUE + "|" + FALSE;
+                                IS_CHAR = "('.')",
+                                IS_STRING = "(\".*\")",
+                                IS_BOOLEAN = "(" + TRUE + "|" + FALSE + ")";
 
     public static final String EQUAL = "=",
                                 MANDATORY_SPACE = "\\s",
                                 POSSIBLE_SPACE = "\\s*",
                                 COLON =";",
                                 COMA = ",";
-    public static final String ASSIGNMENT_VALUE = "(\\S+)";
+    public static final String ASSIGNMENT_VALUE = "("+IS_CHAR + "|" + IS_STRING + "|" + "(?:[^\\s;,]+))";
+
+
     public static final String VAR_NAME_REGEX = "((?:[a-zA-Z][_\\w]*)|(?:_[_\\w]+))";
 
 

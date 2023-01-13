@@ -36,7 +36,7 @@ public class Variable {
         // throws invalidValueException or VariableDoesNotExist (for variable assignment)
         //TODO: analyze the value string, throw exception if its not legal
         if (this.finalVariable){ // cant assign values to final variables
-            System.out.println("raise error");
+            System.out.println("raise error 8");
         }
         for (Pattern p : this.typesPatterns) { //if it's a valid value to assign
             if (p.matcher(value).matches()){
@@ -48,14 +48,14 @@ public class Variable {
             if (map.getCurrentScope(value).getValue()){ // TODO: check its its correct type
                 this.value = true;
             } else {
-                System.out.println("raise error");
+                System.out.println("raise error 7");
             }
         } else { // if there is only outer scope variable - only then its deciding
             if (map.getOuterScope(value) != null) { // TODO: check its its correct type
                 if (map.getOuterScope(value).getValue()){
                     this.value = true;
                 } else {
-                    System.out.println("raise error");
+                    System.out.println("raise error 6");
                 }
             }
         }

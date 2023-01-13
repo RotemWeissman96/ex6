@@ -33,7 +33,7 @@ public class Sjavac {
                     skipMethod(bufferedReader);
                 }
                 if (HashMapVariable.isLineVariableDeclaration(line)){  // check if its a global declaration
-                    compileVariableDeclaration(line, true);
+                    compileVariableDeclaration(line, true,map);
                 }
                 //TODO: check if this line is an assignment (without declaration) and call the function
             }
@@ -43,7 +43,8 @@ public class Sjavac {
         }
     }
 
-    private static void compileVariableDeclaration(String line, boolean global) {
+    private static void compileVariableDeclaration(String line, boolean global, HashMapVariable map) {
+        map.createVariable(line,global);
         //TODO: handle a variable declaration. assumes that the first word is final or a valid type
         //TODO: use HashMapVariable.createVariable function
     }

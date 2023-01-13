@@ -1,6 +1,10 @@
 package opp6.ex6.main;
 
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static opp6.ex6.main.RegularExpressions.*;
 
 public class HashMapVariable {
 
@@ -26,6 +30,30 @@ public class HashMapVariable {
     }
 
     public void createVariable(String line, boolean global) { // throws InvalidValue / WrongSyntax
+        Matcher matcher = null;
+        String type= null;
+
+        if(line.startsWith(INT)){
+            matcher = LEGAL_INT_VARIABLE.matcher(line);
+            type = INT;
+        } else if (line.startsWith(DOUBLE)) {
+            matcher = LEGAL_DOUBLE_VARIABLE.matcher(line);
+            type = DOUBLE;
+        } else if (line.startsWith(STRING)) {
+            matcher = LEGAL_STRING_VARIABLE.matcher(line);
+            type = STRING;
+        } else if (line.startsWith(CHAR)) {
+            matcher = LEGAL_CHAR_VARIABLE.matcher(line);
+            type = CHAR;
+        } else if (line.startsWith(BOOLEAN)) {
+            matcher = LEGAL_BOOLEAN_VARIABLE.matcher(line);
+            type = BOOLEAN;
+        }
+
+        assert (matcher != null);
+        if (matcher.matches()){
+            Variable variable = VariableFactory.createVariable(type, global, false);
+        }
         //TODO: analyze line (decide if its legal) and create a new variable from it
         //TODO: need to handle multi declarations in 1 line
         //TODO: use the factory and add to the current map

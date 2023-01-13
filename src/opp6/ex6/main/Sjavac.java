@@ -127,23 +127,19 @@ public class Sjavac {
      * @throws IOException
      */
     private static void skipMethod(BufferedReader bufferedReader) throws IOException {
-        int countOpenCurlyBrackets = 1;
-        int countCloseCurlyBrackets = 0;
-        String line;
-        while (countOpenCurlyBrackets != countCloseCurlyBrackets) {
-            line = bufferedReader.readLine();
-            if (line.contains("}")) {
-                countCloseCurlyBrackets += 1;
+        int countBrackets = 1;
+        String line = null;
+        while (countBrackets != 0 && (line = bufferedReader.readLine()) != null) {
+            line = line.trim();
+            if (line.startsWith("}") && line.substring(1).trim().equals("")) {
+                countBrackets -= 1;
             } else if (line.startsWith(IF) || line.startsWith(WHILE)) {
-                countOpenCurlyBrackets += 1;
+                countBrackets += 1;
             }
-            //TODO: write a function that skips a method - from void....{    to the last return;}
         }
-
-//    private static String removeSpacesAndComma(String line) {
-//        //TODO: write a function to remove unnecessary spaces from the beginning of line and commas
-//        line = line.trim()
-//        return line.trim();
-//    }
+        if(line == null) {
+            System.out.println("raise error: some scope was not closed");
+        }
     }
 }
+

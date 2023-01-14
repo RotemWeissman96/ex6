@@ -28,7 +28,7 @@ public class Sjavac {
         try (FileReader fileReader = new FileReader(path);
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
             while ((line = bufferedReader.readLine()) != null) {
-                line = line.trim(); // TODO: change to a function that removes commas as well
+                line = line.trim();
                 if (line.equals("") || line.contains("//")) { // if line was all comma or an empty line
                     continue;
                 }
@@ -53,10 +53,7 @@ public class Sjavac {
         try (FileReader fileReader = new FileReader(path);
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
             while ((line = bufferedReader.readLine()) != null) {
-                line = line.trim(); // TODO: make it a function that handles commas as well
-                if (line.equals("")) { // if line was all comma or an empty line
-                    continue;
-                }
+                line = line.trim();
                 if (line.startsWith(VOID)) {
                     compileMethod(bufferedReader, map);
                 }
@@ -100,7 +97,7 @@ public class Sjavac {
 
     private static void compileScope(BufferedReader bufferedReader, HashMapVariable currMap) throws IOException{
         String line;
-        while ((line = bufferedReader.readLine()) != null) {
+        while ((line = bufferedReader.readLine()) != null) { //TODO: add condition end of scope
             line = line.trim();
             if (line.startsWith("if") || line.startsWith("while")){
                 compileIfWhile(line, bufferedReader, currMap);
@@ -193,16 +190,12 @@ public class Sjavac {
             System.out.println("raise error: that is not a valid variable name: " + line);
         }
         matcher = ASSIGN_PATTERN.matcher(line);
-        if(globalVariable != null && localVariable == null){
-            map.setCurrentScope(name, globalVariable); // TODO: explain to me - i think this breaks the API of HashMaps
-        } // TODO: why its not checking if the new value is valid before? and why does this adds a global
-        //TODO: to the current scope? i planed it to change the value to true in the outer scope only if
-        // the assignment is valid - because its deep copy, when exiting this scope the global will be as
-        // before
         if (matcher.lookingAt()) {
             assert variable != null;
             variable.setValue(matcher.group(1), map);
             line = line.substring(matcher.end());
+        } else {
+            System.out.println("raise error: assignment syntax error" + matcher.group(0));
         }
         return line;
     }

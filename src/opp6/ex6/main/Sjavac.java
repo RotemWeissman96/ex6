@@ -138,6 +138,7 @@ public class Sjavac {
         matcher = TYPE_PATTERN.matcher(line);
         while (matcher.lookingAt()) {
             type = matcher.group(1);
+            Variable variable = VariableFactory.createVariable(type, false);
             functionArguments.add(type);
             String name = "";
             line = line.substring(matcher.end());
@@ -145,18 +146,21 @@ public class Sjavac {
             if (matcher.lookingAt()) {
                 name = matcher.group(1);
                 line = line.substring(matcher.end());
+                if(currMap.getCurrentScope(name) != null){
+                    System.out.println("the scope already hase the name");
+                }
             } else {
                 System.out.println("the name wast not current for one of the function arguments");
             }
+            currMap.putCurrentScope(name,variable);
             matcher = NEXT_ARGUMENT_FUNCTION.matcher(line);
         }
         methods.put(functionName,functionArguments);
         matcher = ENDING_FUNCTION_LINE.matcher(line);
-        if(matcher.matches()){
-            compileScope(bufferedReader,currMap);
-        }else {
+        if(!matcher.matches()){
             System.out.println("the function dos not end well");
         }
+        line = compileScope(bufferedReader,currMap);
     }
 
     private static void compileIfWhile(String line, BufferedReader bufferedReader, HashMapVariable map)
@@ -304,5 +308,6 @@ public class Sjavac {
         }
         return line;
     }
+
 }
 

@@ -62,9 +62,9 @@ public class HashMapVariable {
     public void printMaps(){
         System.out.println("\n====printing maps===\n");
         System.out.println("==currentScope==\n");
-        this.currentScope.forEach((key, value) -> System.out.println(key + ":" + value.getType()));
+        this.currentScope.forEach((key, value) -> System.out.println(key + ":" + value.getType() + " " + value.getValue()));
         System.out.println("\n==outerScope==\n");
-        this.outerScope.forEach((key, value) -> System.out.println(key + ":" + value.getType()));
+        this.outerScope.forEach((key, value) -> System.out.println(key + ":" + value.getType() + " " + value.getValue()));
     }
     public void putCurrentScope(String name, Variable variable){
         this.currentScope.put(name,variable);

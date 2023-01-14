@@ -99,20 +99,25 @@ public class Sjavac {
 
     private static boolean compileScope(BufferedReader bufferedReader, HashMapVariable currMap) throws IOException{
         String line;
+        boolean lastReturn = false;
         while ((line = bufferedReader.readLine()) != null) {
             line = line.trim();
             if (line.startsWith("}") && line.substring(1).trim().equals("")){
-                return line;
-            }
-            if (line.startsWith("if") || line.startsWith("while")){
-                compileIfWhile(line, bufferedReader, currMap);
-            } else if (HashMapVariable.isLineVariableDeclaration(line)) {
-                compileVariableDeclaration(line, false, currMap);
-            } else { // assumes it's an assignment
-                compileAssignment(line, currMap);
+                currMap.printMaps();
+                return lastReturn;
+            } else {
+                lastReturn = RETURN_LINE_PATTERN.matcher(line).matches(); // check if
+                if (line.startsWith("if") || line.startsWith("while")) {
+                    compileIfWhile(line, bufferedReader, currMap);
+                } else if (HashMapVariable.isLineVariableDeclaration(line)) {
+                    compileVariableDeclaration(line, false, currMap);
+                } else { // assumes it's an assignment
+                    compileAssignment(line, currMap);
+                }
             }
         }
-        return null;
+        System.out.println("raise error: end of file reached with no end of scope");
+        return false;
     }
 
     private static void compileMethod(BufferedReader bufferedReader, HashMapVariable map, String line)
@@ -160,7 +165,7 @@ public class Sjavac {
         if(!matcher.matches()){
             System.out.println("the function dos not end well");
         }
-        line = compileScope(bufferedReader,currMap);
+        compileScope(bufferedReader,currMap);
     }
 
     private static void compileIfWhile(String line, BufferedReader bufferedReader, HashMapVariable map)
@@ -186,7 +191,7 @@ public class Sjavac {
                         }
                         if (!VariableFactory.BOOLEAN_VALID_TYPES.contains(var.getType()) || !var.getValue()){
                             //check if the type is boolean friendly and that the var was initiated
-                                System.out.println("raise error: this variable is not a initialized " +
+                                System.out.println("raise error: this variable is not an initialized " +
                                         "boolean: " + matcher.group(1));
                         }
                     } else {
@@ -287,23 +292,22 @@ public class Sjavac {
         if (matcher.lookingAt()) {
             name = matcher.group(1);
             if (map.getCurrentScope(name) != null){
-                System.out.println("raise error 8");
+                System.out.println("raise error: this variable name is already used in this scope: " + name);
             }
             line = line.substring(matcher.end());
         } else {
-            System.out.println("raise error 2");
+            System.out.println("raise error: this is not a valid variable name: " + line);
         }
         Variable variable = VariableFactory.createVariable(type, global);
         matcher = ASSIGN_PATTERN.matcher(line);
         map.putCurrentScope(name, variable);
-
         if (matcher.lookingAt()) {
             variable.setValue(matcher.group(1), map);
             variable.setFinale(finalVariable); // set final to true only after value assignment
             line = line.substring(matcher.end());
         } else {
             if (finalVariable) { // if it's a final variable there must be assignment
-                System.out.println("raise error 1");
+                System.out.println("raise error cant declare a final variable with no assignment: " + name);
             }
         }
         return line;

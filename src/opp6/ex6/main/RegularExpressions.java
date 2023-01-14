@@ -4,11 +4,6 @@ import java.util.regex.Pattern;
 
 public class RegularExpressions {
     public static final String TYPE = "(int|double|String|char|boolean)";
-    public static final String  INT = "int",
-                                DOUBLE = "double",
-                                STRING = "String",
-                                CHAR = "char",
-                                BOOLEAN = "boolean";
     public static final String  VOID = "void",
                                 FINAL = "final",
                                 IF = "if",
@@ -17,7 +12,7 @@ public class RegularExpressions {
                                 FALSE = "false",
                                 RETURN = "return";
     public static final String  IS_INT = "([-\\+]?\\d+)",
-                                IS_DOUBLE = "([+-]?(?:\\d*\\.\\d+)|(?:\\d+\\.\\d*))",
+                                IS_DOUBLE = "([+-]?(?:(?:\\d*\\.\\d+)|(?:\\d+\\.\\d*)))",
                                 IS_CHAR = "('.')",
                                 IS_STRING = "(\"[^,'\"\\\\]*\")",
                                 IS_BOOLEAN = "(" + TRUE + "|" + FALSE + ")";
@@ -53,6 +48,10 @@ public class RegularExpressions {
     public static final String WHILE_IF_REGEX =
             POSSIBLE_SPACE+"(?:"+IF+"|"+WHILE+")"+POSSIBLE_SPACE+"\\("+CONDITION_REGEX + "\\)" +
                     POSSIBLE_SPACE + OPEN_BRACKETS + POSSIBLE_SPACE;
+    public static final String RETURN_LINE_REGEX =
+            POSSIBLE_SPACE + RETURN + POSSIBLE_SPACE + COLON + POSSIBLE_SPACE;
+
+
     public static Pattern FINAL_PATTERN = Pattern.compile(POSSIBLE_SPACE + FINAL + MANDATORY_SPACE);
     public static Pattern VOID_PATTERN =
             Pattern.compile(POSSIBLE_SPACE + VOID + MANDATORY_SPACE);
@@ -75,5 +74,5 @@ public class RegularExpressions {
     public static Pattern ALL_BOOLEAN_PATTERN = Pattern.compile(ALL_BOOLEAN_REGEX);
     public static Pattern NEXT_ARGUMENT_PATTERN = Pattern.compile(NEXT_ARGUMENT_REGEX);
     public static Pattern ENDING_SCOPE_PATTERN = Pattern.compile(ENDING_SCOPE_REGEX);
-
+    public static Pattern RETURN_LINE_PATTERN = Pattern.compile(RETURN_LINE_REGEX);
 }

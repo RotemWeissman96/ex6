@@ -116,7 +116,11 @@ public class Sjavac {
                 currMap.printMaps();
                 return lastReturn;
             } else {
-                lastReturn = RETURN_LINE_PATTERN.matcher(line).matches(); // check if
+                lastReturn = RETURN_LINE_PATTERN.matcher(line).matches();
+                if (lastReturn) {
+                    // check if
+                    continue;
+                }
                 if (line.startsWith("if") || line.startsWith("while")) {
                     compileIfWhile(line, bufferedReader, currMap);
                 } else if (HashMapVariable.isLineVariableDeclaration(line)) {
@@ -154,6 +158,7 @@ public class Sjavac {
             type = matcher.group(1);
             Variable variable = VariableFactory.createVariable(type, false);
             functionArguments.add(type);
+            String name = "";
             line = line.substring(matcher.end());
             line = validatingName(line, currMap, variable);
 

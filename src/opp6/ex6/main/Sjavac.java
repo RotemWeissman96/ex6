@@ -97,7 +97,7 @@ public class Sjavac {
         }
     }
 
-    private static String compileScope(BufferedReader bufferedReader, HashMapVariable currMap) throws IOException{
+    private static boolean compileScope(BufferedReader bufferedReader, HashMapVariable currMap) throws IOException{
         String line;
         while ((line = bufferedReader.readLine()) != null) {
             line = line.trim();
@@ -153,10 +153,10 @@ public class Sjavac {
                 System.out.println("the name wast not current for one of the function arguments");
             }
             currMap.putCurrentScope(name,variable);
-            matcher = NEXT_ARGUMENT_FUNCTION.matcher(line);
+            matcher = NEXT_ARGUMENT_PATTERN.matcher(line);
         }
         methods.put(functionName,functionArguments);
-        matcher = ENDING_FUNCTION_LINE.matcher(line);
+        matcher = ENDING_SCOPE_PATTERN.matcher(line);
         if(!matcher.matches()){
             System.out.println("the function dos not end well");
         }
@@ -197,7 +197,7 @@ public class Sjavac {
         } else {
             System.out.println("raise error: wrong if/while syntax: " + line);
         }
-        //TODO: continue after condition
+        compileScope(bufferedReader, currMap);
     }
 
     /**

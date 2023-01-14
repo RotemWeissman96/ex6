@@ -17,7 +17,7 @@ public class RegularExpressions {
                                 FALSE = "false",
                                 RETURN = "return";
     public static final String  IS_INT = "([-\\+]?\\d+)",
-                                IS_DOUBLE = "(\\d*.\\d+)|(\\d+.\\d*)",
+                                IS_DOUBLE = "([+-]?(?:\\d*\\.\\d+)|(?:\\d+\\.\\d*))",
                                 IS_CHAR = "('.')",
                                 IS_STRING = "(\"[^,'\"\\\\]*\")",
                                 IS_BOOLEAN = "(" + TRUE + "|" + FALSE + ")";
@@ -31,7 +31,16 @@ public class RegularExpressions {
 
 
     public static final String VAR_NAME_REGEX = "((?:[a-zA-Z][_\\w]*)|(?:_[_\\w]+))";
-
+    public static final String ALL_BOOLEAN_REGEX =
+           "(?:" + IS_BOOLEAN + "|" + IS_DOUBLE + "|" + IS_INT + ")";
+    public static final String BOOLEAN_VAR_REGEX = "(?:"+ALL_BOOLEAN_REGEX + "|" + VAR_NAME_REGEX + ")";
+    public static final String AND_OR = "(?:(?:\\|\\|)|(?:&&))";
+    public static final String CONDITION_REGEX =
+            "("+POSSIBLE_SPACE+ALL_BOOLEAN_REGEX+
+                    "(?:"+POSSIBLE_SPACE+AND_OR+POSSIBLE_SPACE+BOOLEAN_VAR_REGEX+")*"+POSSIBLE_SPACE+")";
+    public static final String WHILE_IF_REGEX =
+            POSSIBLE_SPACE+"(?:"+IF+"|"+WHILE+")"+POSSIBLE_SPACE+"\\("+CONDITION_REGEX + "\\)" +
+                    POSSIBLE_SPACE + COLON + POSSIBLE_SPACE;
 
 
 //    public static final String SINGLE_ASSIGNMENT =
@@ -60,4 +69,6 @@ public class RegularExpressions {
     public static Pattern BOOLEAN_PATTERN = Pattern.compile(IS_BOOLEAN);
     public static Pattern CHAR_PATTERN = Pattern.compile(IS_CHAR);
     public static Pattern STRING_PATTERN = Pattern.compile(IS_STRING);
+    public static Pattern WHILE_IF_PATTERN = Pattern.compile(WHILE_IF_REGEX);
+    public static Pattern ALL_BOOLEAN_PATTERN = Pattern.compile(ALL_BOOLEAN_REGEX);
 }

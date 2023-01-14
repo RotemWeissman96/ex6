@@ -28,7 +28,7 @@ public class Sjavac {
         try (FileReader fileReader = new FileReader(path);
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
             while ((line = bufferedReader.readLine()) != null) {
-                line = line.trim();
+                line = line.trim(); // TODO: change to a function that removes commas as well
                 if (line.equals("") || line.contains("//")) { // if line was all comma or an empty line
                     continue;
                 }
@@ -41,8 +41,25 @@ public class Sjavac {
                     continue;
                 }
                 compileAssignment(line, map);
-                //TODO: check if this line is an assignment (without declaration) and call the function
-//                System.out.println("raise error 10");
+                // if it's not a declaration and not a method, assume it's an assign
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void functionsSearch(String path, HashMapVariable map) {  // throws InvalidValue / WrongSyntax
+        String line;
+        try (FileReader fileReader = new FileReader(path);
+             BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+            while ((line = bufferedReader.readLine()) != null) {
+                line = line.trim(); // TODO: make it a function that handles commas as well
+                if (line.equals("")) { // if line was all comma or an empty line
+                    continue;
+                }
+                if (line.startsWith(VOID)) {
+                    compileMethod(bufferedReader, map);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -64,7 +81,7 @@ public class Sjavac {
             type = matcher.group(1);
             line = line.substring(matcher.end());
         } else {
-            System.out.println("raise error 3 ");
+            System.out.println("raise error: that variable type does not exist");
         }
         // check for variables
         line = map.addVariableFromLineStart(line, type, global, finalVariable);
@@ -77,25 +94,21 @@ public class Sjavac {
         }
         matcher = COLON_PATTERN.matcher(line);
         if (!matcher.lookingAt()) {  // end of line must be ;
-            System.out.println("raise error 4");
+            System.out.println("raise error: line must end with ;");
         }
     }
 
-    private static void functionsSearch(String path, HashMapVariable map) {  // throws InvalidValue / WrongSyntax
+    private static void compileScope(BufferedReader bufferedReader, HashMapVariable currMap) throws IOException{
         String line;
-        try (FileReader fileReader = new FileReader(path);
-             BufferedReader bufferedReader = new BufferedReader(fileReader)) {
-            while ((line = bufferedReader.readLine()) != null) {
-                line = line.trim();
-                if (line.equals("")) { // if line was all comma or an empty line
-                    continue;
-                }
-                if (line.startsWith(VOID)) {
-                    compileMethod(bufferedReader, map);
-                }
+        while ((line = bufferedReader.readLine()) != null) {
+            line = line.trim();
+            if (line.startsWith("if") || line.startsWith("while")){
+                compileIfWhile(line, bufferedReader, currMap);
+            } else if (HashMapVariable.isLineVariableDeclaration(line)) {
+                compileVariableDeclaration(line, false, currMap);
+            } else { // assumes it's an assignment
+                compileAssignment(line, currMap);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -105,10 +118,39 @@ public class Sjavac {
         //TODO: compile a method
     }
 
-    private static void compileIfWhile(BufferedReader bufferedReader, HashMapVariable map)
+    private static void compileIfWhile(String line, BufferedReader bufferedReader, HashMapVariable map)
             throws IOException { // throws InvalidValue / WrongSyntax
         HashMapVariable currMap = new HashMapVariable(map);
-        //TODO: compile a while/if statement
+        Matcher matcher = WHILE_IF_PATTERN.matcher(line);
+        if(matcher.matches()){
+            String condition = matcher.group(1);
+            while (!condition.equals("")){
+                condition = condition.trim();
+                matcher = ALL_BOOLEAN_PATTERN.matcher(condition);
+                if (matcher.lookingAt()){ // if its a constant valid boolean
+                    condition = condition.substring(matcher.end());
+                } else { // assume it's a variable name
+                    matcher = VAR_NAME_PATTERN.matcher(condition);
+                    if (matcher.lookingAt()) {
+                        Variable var = map.getCurrentScope(matcher.group(1)); // first check local
+                        if (var != null){
+                            if (!VariableFactory.BOOLEAN_VALID_TYPES.contains(var.getType())){
+                                System.out.println("raise error: this variable is not boolean: " + matcher.group(1));
+                            }
+                        } else { // only if none local then check for an outer scope variable
+                            var = map.getOuterScope(matcher.group(1));
+                            if (!VariableFactory.BOOLEAN_VALID_TYPES.contains(var.getType())){
+                                System.out.println("raise error: this variable is not boolean: " + matcher.group(1));
+                            }
+                        }
+                    } else {
+                        System.out.println("raise error: this variable is not valid: " + condition);
+                    }
+                }
+            }
+        } else {
+            System.out.println("raise error: wrong if/while syntax: " + line);
+        }
     }
 
     /**
@@ -126,6 +168,8 @@ public class Sjavac {
         }
         //TODO: compile assignment, check if variable exist in current scope, use Variable.setValue function
         //TODO: handle an uninitialized global or outer scope variable as a new variable in current scope
+        //TODO: add a closing line condition (for ;) and a raise error print
+        //TODO: if this line is not an assignment then its an error because its the last option to check
     }
 
     private static String handlingCompileAssignment(String line, HashMapVariable map){
@@ -142,16 +186,19 @@ public class Sjavac {
                 variable = globalVariable;
             }
             if(variable == null){
-                System.out.println("raise error 11");
+                System.out.println("raise error: this variable was not declared: " + name);
             }
             line = line.substring(matcher.end());
         } else {
-            System.out.println("raise error12");
+            System.out.println("raise error: that is not a valid variable name: " + line);
         }
         matcher = ASSIGN_PATTERN.matcher(line);
         if(globalVariable != null && localVariable == null){
-            map.setCurrentScope(name, globalVariable);
-        }
+            map.setCurrentScope(name, globalVariable); // TODO: explain to me - i think this breaks the API of HashMaps
+        } // TODO: why its not checking if the new value is valid before? and why does this adds a global
+        //TODO: to the current scope? i planed it to change the value to true in the outer scope only if
+        // the assignment is valid - because its deep copy, when exiting this scope the global will be as
+        // before
         if (matcher.lookingAt()) {
             assert variable != null;
             variable.setValue(matcher.group(1), map);

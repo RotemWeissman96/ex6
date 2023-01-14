@@ -12,7 +12,7 @@ public class VariableFactory {
     private static final ArrayList<String> DOUBLE_VALID_TYPES = new ArrayList<>(List.of("double", "int"));
     private static final ArrayList<String> CHAR_VALID_TYPES =  new ArrayList<>(List.of("char"));
     private static final ArrayList<String> STRING_VALID_TYPES =  new ArrayList<>(List.of("String"));
-    private static final ArrayList<String> BOOLEAN_VALID_TYPES =  new ArrayList<>(List.of("boolean",
+    public static final ArrayList<String> BOOLEAN_VALID_TYPES =  new ArrayList<>(List.of("boolean",
             "double", "int"));
 
     public static Variable createVariable(String type, boolean global){

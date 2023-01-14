@@ -1,6 +1,7 @@
 package opp.ex6.main;
 
 import java.util.HashMap;
+import java.util.regex.Matcher;
 
 public class HashMapVariable {
 
@@ -64,5 +65,23 @@ public class HashMapVariable {
     }
     public void putCurrentScope(String name, Variable variable){
         this.currentScope.put(name,variable);
+    }
+
+    public String validatingName(String line, Variable variable, boolean globalRun){
+        String name = "";
+        Matcher matcher = RegularExpressions.VAR_NAME_PATTERN.matcher(line);
+        if (matcher.lookingAt()) {
+            name = matcher.group(1);
+            if (this.getCurrentScope(name) != null && !globalRun){
+                System.out.println("raise error: this variable name is already used in this scope: " + name);
+            }
+            line = line.substring(matcher.end());
+        } else {
+            System.out.println("raise error: this is not a valid variable name: " + line);
+        }
+        if (!globalRun){
+            this.putCurrentScope(name, variable);
+        }
+        return line;
     }
 }

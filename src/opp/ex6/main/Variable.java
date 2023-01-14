@@ -1,6 +1,7 @@
 package opp.ex6.main;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Variable {
@@ -71,6 +72,66 @@ public class Variable {
                 System.out.println(this.type + " : " + value);
             }
         }
+    }
+
+    public static void compileVariableDeclaration(String line, boolean global, HashMapVariable map) {
+        String type = null;
+        boolean finalVariable = false;
+        // check final
+        Matcher matcher = RegularExpressions.FINAL_PATTERN.matcher(line);
+        if (matcher.lookingAt()){
+            finalVariable = true;
+            line = line.substring(matcher.end());
+        }
+        // check type
+        matcher = RegularExpressions.TYPE_PATTERN.matcher(line);
+        if (matcher.lookingAt()) {
+            type = matcher.group(1);
+            line = line.substring(matcher.end());
+        } else {
+            System.out.println("raise error: that variable type does not exist");
+        }
+        // check for variables
+        line = addVariableFromLineStart(line, type, global, finalVariable, map);
+        matcher = RegularExpressions.COMA_PATTERN.matcher(line);
+        // if there is "," then there is another variable
+        while (matcher.lookingAt()) {
+            line = line.substring(matcher.end());
+            line = addVariableFromLineStart(line, type, global, finalVariable, map);
+            matcher = RegularExpressions.COMA_PATTERN.matcher(line);
+        }
+        matcher = RegularExpressions.COLON_PATTERN.matcher(line);
+        if (!matcher.lookingAt()) {  // end of line must be ;
+            System.out.println("raise error: line must end with ;");
+        }
+    }
+
+    /**
+     * get a line that was already compiled and the next 1 or 2 words should be a variable and an
+     * assignment or a variable without an assignment
+     * @param line the current line to compile
+     * @param type the type of variable
+     * @param global is this variable global
+     * @param finalVariable is this variable final
+     * @return the line after the variable declaration
+     */
+    public static String addVariableFromLineStart(String line, String type, boolean global, boolean finalVariable,
+                                                  HashMapVariable map){
+        // throws InvalidValue / WrongSyntax
+        // check type
+        Variable variable = VariableFactory.createVariable(type, global);
+        line = map.validatingName(line, variable, false);
+        Matcher matcher = RegularExpressions.ASSIGN_PATTERN.matcher(line);
+        if (matcher.lookingAt()) {
+            variable.setValue(matcher.group(1), map);
+            variable.setFinale(finalVariable); // set final to true only after value assignment
+            line = line.substring(matcher.end());
+        } else {
+            if (finalVariable) { // if it's a final variable there must be assignment
+                System.out.println("raise error 1");
+            }
+        }
+        return line;
     }
 
     public void setFinale(boolean finalVariable) {

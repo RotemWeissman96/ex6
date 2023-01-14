@@ -97,12 +97,12 @@ public class Sjavac {
         }
     }
 
-    private static void compileScope(BufferedReader bufferedReader, HashMapVariable currMap) throws IOException{
+    private static String compileScope(BufferedReader bufferedReader, HashMapVariable currMap) throws IOException{
         String line;
         while ((line = bufferedReader.readLine()) != null) {
             line = line.trim();
             if (line.startsWith("}") && line.substring(1).trim().equals("")){
-                break;
+                return line;
             }
             if (line.startsWith("if") || line.startsWith("while")){
                 compileIfWhile(line, bufferedReader, currMap);
@@ -112,6 +112,7 @@ public class Sjavac {
                 compileAssignment(line, currMap);
             }
         }
+        return null;
     }
 
     private static void compileMethod(BufferedReader bufferedReader, HashMapVariable map, String line)
@@ -123,7 +124,7 @@ public class Sjavac {
         if (matcher.lookingAt()) {
             line = line.substring(matcher.end());
         } else {
-            System.out.println("raise error: the void dos not have space from the name");
+            System.out.println("raise error: the void does not have space from the name");
         }
         //check  if the name is like is supposed to be
         matcher = FUNCTION_NAME_PATTERN.matcher(line);
@@ -192,6 +193,7 @@ public class Sjavac {
         } else {
             System.out.println("raise error: wrong if/while syntax: " + line);
         }
+        //TODO: continue after condition
     }
 
     /**

@@ -46,13 +46,13 @@ public class RegularExpressions {
     public static final String NEXT_ELEMENT_FUNCTION =
             POSSIBLE_SPACE + "," + POSSIBLE_SPACE + TYPE + MANDATORY_SPACE;
     public static final String ENDING_FUNCTION_NAME =
-            POSSIBLE_SPACE + CLOSE_BRACKETS + POSSIBLE_SPACE + OPEN_CURLY_BRACKETS;
+            POSSIBLE_SPACE + CLOSE_BRACKETS + POSSIBLE_SPACE + OPEN_CURLY_BRACKETS + POSSIBLE_SPACE;
     public static final String CONDITION_REGEX =
-            "("+POSSIBLE_SPACE+ALL_BOOLEAN_REGEX+
+            "("+POSSIBLE_SPACE+BOOLEAN_VAR_REGEX+
                     "(?:"+POSSIBLE_SPACE+AND_OR+POSSIBLE_SPACE+BOOLEAN_VAR_REGEX+")*"+POSSIBLE_SPACE+")";
     public static final String WHILE_IF_REGEX =
             POSSIBLE_SPACE+"(?:"+IF+"|"+WHILE+")"+POSSIBLE_SPACE+"\\("+CONDITION_REGEX + "\\)" +
-                    POSSIBLE_SPACE + COLON + POSSIBLE_SPACE;
+                    POSSIBLE_SPACE + OPEN_BRACKETS + POSSIBLE_SPACE;
     public static Pattern FINAL_PATTERN = Pattern.compile(POSSIBLE_SPACE + FINAL + MANDATORY_SPACE);
     public static Pattern VOID_PATTERN =
             Pattern.compile(POSSIBLE_SPACE + VOID + MANDATORY_SPACE);

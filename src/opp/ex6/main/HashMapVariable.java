@@ -1,10 +1,6 @@
-package opp6.ex6.main;
+package opp.ex6.main;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-
-import static opp6.ex6.main.RegularExpressions.*;
 
 public class HashMapVariable {
 

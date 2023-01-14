@@ -1,11 +1,8 @@
-package opp6.ex6.main;
+package opp.ex6.main;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import static opp6.ex6.main.RegularExpressions.*;
 
 public class VariableFactory {
     private static final ArrayList<String> INT_VALID_TYPES = new ArrayList<>(List.of("int"));
@@ -28,15 +25,15 @@ public class VariableFactory {
     private static Pattern typeRegex(String type){
         switch (type){
             case "int":
-                return INT_PATTERN;
+                return RegularExpressions.INT_PATTERN;
             case "double":
-                return DOUBLE_PATTERN;
+                return RegularExpressions.DOUBLE_PATTERN;
             case "char":
-                return CHAR_PATTERN;
+                return RegularExpressions.CHAR_PATTERN;
             case "String":
-                return STRING_PATTERN;
+                return RegularExpressions.STRING_PATTERN;
             case "boolean":
-                return BOOLEAN_PATTERN;
+                return RegularExpressions.BOOLEAN_PATTERN;
         }
         return null;
     }

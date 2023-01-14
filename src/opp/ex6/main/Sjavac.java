@@ -1,4 +1,4 @@
-package opp6.ex6.main;
+package opp.ex6.main;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
-
-import static opp6.ex6.main.RegularExpressions.*;
 
 //test
 public class Sjavac {
@@ -56,7 +54,7 @@ public class Sjavac {
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
             while ((line = bufferedReader.readLine()) != null) {
                 line = line.trim();
-                if (line.startsWith(VOID)) {
+                if (line.startsWith(RegularExpressions.VOID)) {
                     compileMethodBody(bufferedReader, map, line);
                 }
             }
@@ -78,13 +76,13 @@ public class Sjavac {
         String type = null;
         boolean finalVariable = false;
         // check final
-        Matcher matcher = FINAL_PATTERN.matcher(line);
+        Matcher matcher = RegularExpressions.FINAL_PATTERN.matcher(line);
         if (matcher.lookingAt()){
             finalVariable = true;
             line = line.substring(matcher.end());
         }
         // check type
-        matcher = TYPE_PATTERN.matcher(line);
+        matcher = RegularExpressions.TYPE_PATTERN.matcher(line);
         if (matcher.lookingAt()) {
             type = matcher.group(1);
             line = line.substring(matcher.end());
@@ -93,14 +91,14 @@ public class Sjavac {
         }
         // check for variables
         line = addVariableFromLineStart(line, type, global, finalVariable, map);
-        matcher = COMA_PATTERN.matcher(line);
+        matcher = RegularExpressions.COMA_PATTERN.matcher(line);
         // if there is "," then there is another variable
         while (matcher.lookingAt()) {
             line = line.substring(matcher.end());
             line = addVariableFromLineStart(line, type, global, finalVariable, map);
-            matcher = COMA_PATTERN.matcher(line);
+            matcher = RegularExpressions.COMA_PATTERN.matcher(line);
         }
-        matcher = COLON_PATTERN.matcher(line);
+        matcher = RegularExpressions.COLON_PATTERN.matcher(line);
         if (!matcher.lookingAt()) {  // end of line must be ;
             System.out.println("raise error: line must end with ;");
         }
@@ -115,7 +113,7 @@ public class Sjavac {
                 currMap.printMaps();
                 return lastReturn;
             } else {
-                lastReturn = RETURN_LINE_PATTERN.matcher(line).matches();
+                lastReturn = RegularExpressions.RETURN_LINE_PATTERN.matcher(line).matches();
                 if (lastReturn) {
                     // check if
                     continue;
@@ -125,7 +123,7 @@ public class Sjavac {
                 } else if (HashMapVariable.isLineVariableDeclaration(line)) {
                     compileVariableDeclaration(line, false, currMap);
                 } else {
-                    Matcher matcher = IS_METHOD_CALL_PATTERN.matcher(line);
+                    Matcher matcher = RegularExpressions.IS_METHOD_CALL_PATTERN.matcher(line);
                     if (matcher.lookingAt()) { // it's a method call
                         compileMethodCall(line, currMap);
                     } else { // assumes it's an assignment
@@ -141,7 +139,7 @@ public class Sjavac {
     private static void compileMethodHead( HashMapVariable currMap, String line, boolean globalRun)
             throws IOException { // throws InvalidValue / WrongSyntax
         String functionName = null;
-        Matcher matcher = VOID_PATTERN.matcher(line);
+        Matcher matcher = RegularExpressions.VOID_PATTERN.matcher(line);
         // checking that the void has space from the name
         if (matcher.lookingAt()) {
             line = line.substring(matcher.end());
@@ -149,7 +147,7 @@ public class Sjavac {
             System.out.println("raise error: the void does not have space from the name");
         }
         //check  if the name is like is supposed to be
-        matcher = FUNCTION_NAME_PATTERN.matcher(line);
+        matcher = RegularExpressions.FUNCTION_NAME_PATTERN.matcher(line);
         if (matcher.lookingAt()) {
             functionName =  matcher.group(1);
             line = line.substring(matcher.end());
@@ -159,16 +157,16 @@ public class Sjavac {
         ArrayList<String> functionArguments = new ArrayList<>();
         boolean finalVariable = false;
         line = checkingFunctionArgument(functionArguments,line,currMap,finalVariable);
-        matcher = NEXT_ARGUMENT_PATTERN.matcher(line);
+        matcher = RegularExpressions.NEXT_ARGUMENT_PATTERN.matcher(line);
         while (matcher.lookingAt()) {
             line = line.substring(matcher.end());
             line = checkingFunctionArgument(functionArguments,line,currMap,finalVariable);
-            matcher = NEXT_ARGUMENT_PATTERN.matcher(line);
+            matcher = RegularExpressions.NEXT_ARGUMENT_PATTERN.matcher(line);
         }
         if(globalRun){
             methods.put(functionName,functionArguments);
         }
-        matcher = ENDING_SCOPE_PATTERN.matcher(line);
+        matcher = RegularExpressions.ENDING_SCOPE_PATTERN.matcher(line);
         if(!matcher.matches()){
             System.out.println("the function dos not end well");
         }
@@ -178,12 +176,12 @@ public class Sjavac {
     private static String checkingFunctionArgument
             (ArrayList<String> functionArguments, String line,
              HashMapVariable currMap, Boolean finalVariable){
-        Matcher matcher = FINAL_PATTERN.matcher(line);
+        Matcher matcher = RegularExpressions.FINAL_PATTERN.matcher(line);
         if (matcher.lookingAt()){
             finalVariable = true;
             line = line.substring(matcher.end());
         }
-        matcher = TYPE_PATTERN.matcher(line);
+        matcher = RegularExpressions.TYPE_PATTERN.matcher(line);
         if(!matcher.lookingAt()) {
             System.out.println("raise error: that variable type does not exist");
         }
@@ -200,16 +198,16 @@ public class Sjavac {
             throws IOException { // throws InvalidValue / WrongSyntax
         HashMapVariable currMap = new HashMapVariable(map);
         Variable var = null;
-        Matcher matcher = WHILE_IF_PATTERN.matcher(line);
+        Matcher matcher = RegularExpressions.WHILE_IF_PATTERN.matcher(line);
         if(matcher.matches()){
             String condition = matcher.group(1);
             while (!condition.equals("")){
                 condition = condition.trim();
-                matcher = ALL_BOOLEAN_PATTERN.matcher(condition);
+                matcher = RegularExpressions.ALL_BOOLEAN_PATTERN.matcher(condition);
                 if (matcher.lookingAt()){ // if its a constant valid boolean
                     condition = condition.substring(matcher.end());
                 } else { // assume it's a variable name
-                    matcher = VAR_NAME_PATTERN.matcher(condition);
+                    matcher = RegularExpressions.VAR_NAME_PATTERN.matcher(condition);
                     if (matcher.lookingAt()) {
                         if ((var = map.getCurrentScope(matcher.group(1))) == null) { // first check local
                             if ((var = map.getOuterScope(matcher.group(1))) == null) { // then check outer
@@ -236,14 +234,14 @@ public class Sjavac {
 
 
     private static void compileMethodCall(String line, HashMapVariable map){
-        Matcher matcher = FUNCTION_NAME_PATTERN.matcher(line);
+        Matcher matcher = RegularExpressions.FUNCTION_NAME_PATTERN.matcher(line);
         if (matcher.lookingAt()){
 
             String argumentList = line.substring(matcher.end());
             ArrayList<String> argumentsType = methods.get(matcher.group(1));
             if (argumentsType != null) {
                 for (String type : argumentsType) {
-                    matcher = ARGUMENT_PATTERN.matcher(argumentList); //TODO: this also get the , or ) for
+                    matcher = RegularExpressions.ARGUMENT_PATTERN.matcher(argumentList); //TODO: this also get the , or ) for
                     // set value, witch is not good
                     if (matcher.lookingAt()){
                         Variable testVar = VariableFactory.createVariable(type, false);
@@ -252,12 +250,12 @@ public class Sjavac {
                     } else {
                         System.out.println("raise error: this is not a valid argument list: " + line);
                     }
-                    matcher = COMA_PATTERN.matcher(argumentList);
+                    matcher = RegularExpressions.COMA_PATTERN.matcher(argumentList);
                     if (matcher.lookingAt()){
                         argumentList = argumentList.substring(matcher.end());
                     }
                 }
-                matcher = END_METHOD_CALL_PATTERN.matcher(argumentList);
+                matcher = RegularExpressions.END_METHOD_CALL_PATTERN.matcher(argumentList);
                 if (!matcher.matches()) {
                     System.out.println("raise error: there are to few arguments or end of line out of order");
                 }
@@ -276,13 +274,13 @@ public class Sjavac {
      */
     private static void compileAssignment(String line, HashMapVariable map) { // throws InvalidValue / WrongSyntax
         line = handlingCompileAssignment(line, map);
-        Matcher matcher = COMA_PATTERN.matcher(line);
+        Matcher matcher = RegularExpressions.COMA_PATTERN.matcher(line);
         while (matcher.lookingAt()){
             line = line.substring(matcher.end());
             line = handlingCompileAssignment(line, map);
-            matcher = COMA_PATTERN.matcher(line);
+            matcher = RegularExpressions.COMA_PATTERN.matcher(line);
         }
-        matcher = COLON_PATTERN.matcher(line);
+        matcher = RegularExpressions.COLON_PATTERN.matcher(line);
         if (!matcher.lookingAt()) {  // end of line must be ;
             System.out.println("raise error: line must end with ;");
         }
@@ -290,7 +288,7 @@ public class Sjavac {
 
     private static String handlingCompileAssignment(String line, HashMapVariable map){
         Variable variable = null;
-        Matcher matcher = VAR_NAME_PATTERN.matcher(line);
+        Matcher matcher = RegularExpressions.VAR_NAME_PATTERN.matcher(line);
         if (matcher.lookingAt()) {
             if((variable = map.getCurrentScope(matcher.group(1))) == null) {
                 if ((variable = map.getOuterScope(matcher.group(1))) == null) {
@@ -301,7 +299,7 @@ public class Sjavac {
         } else {
             System.out.println("raise error: that is not a valid variable name: " + matcher.group(1));
         }
-        matcher = ASSIGN_PATTERN.matcher(line);
+        matcher = RegularExpressions.ASSIGN_PATTERN.matcher(line);
         if (matcher.lookingAt()) {
             assert variable != null;
             variable.setValue(matcher.group(1), map);
@@ -326,7 +324,7 @@ public class Sjavac {
             line = line.trim();
             if (line.startsWith("}") && line.substring(1).trim().equals("")) {
                 countBrackets -= 1;
-            } else if (line.startsWith(IF) || line.startsWith(WHILE)) {
+            } else if (line.startsWith(RegularExpressions.IF) || line.startsWith(RegularExpressions.WHILE)) {
                 countBrackets += 1;
             }
         }
@@ -350,7 +348,7 @@ public class Sjavac {
         // check type
         Variable variable = VariableFactory.createVariable(type, global);
         line = validatingName(line, map, variable);
-        Matcher matcher = ASSIGN_PATTERN.matcher(line);
+        Matcher matcher = RegularExpressions.ASSIGN_PATTERN.matcher(line);
         if (matcher.lookingAt()) {
             variable.setValue(matcher.group(1), map);
             variable.setFinale(finalVariable); // set final to true only after value assignment
@@ -365,7 +363,7 @@ public class Sjavac {
 
     private static String validatingName(String line,  HashMapVariable map, Variable variable){
         String name = "";
-        Matcher matcher = VAR_NAME_PATTERN.matcher(line);
+        Matcher matcher = RegularExpressions.VAR_NAME_PATTERN.matcher(line);
         if (matcher.lookingAt()) {
             name = matcher.group(1);
             if (map.getCurrentScope(name) != null){

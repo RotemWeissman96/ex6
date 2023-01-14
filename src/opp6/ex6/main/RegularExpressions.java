@@ -27,9 +27,8 @@ public class RegularExpressions {
                                 OPEN_CURLY_BRACKETS = "\\{",
                                 CLOSE_CURLY_BRACKETS = "\\}";
 
-    public static final String ASSIGNMENT_VALUE = "("+IS_CHAR + "|" + IS_STRING + "|" + "(?:[^\\s;,]+))";
-
-
+    public static final String ASSIGNMENT_VALUE =
+            "("+IS_CHAR + "|" + IS_STRING + "|" + "(?:[\\w_\\.\\+-]+))";
     public static final String VAR_NAME_REGEX = "((?:[a-zA-Z][_\\w]*)|(?:_[_\\w]+))";
 
     public static final String FUNCTION_NAME_REGEX = "([a-zA-Z][_\\w]*)";
@@ -42,6 +41,8 @@ public class RegularExpressions {
             POSSIBLE_SPACE + COMA + POSSIBLE_SPACE;
     public static final String ENDING_SCOPE_REGEX =
             POSSIBLE_SPACE + CLOSE_BRACKETS + POSSIBLE_SPACE + OPEN_CURLY_BRACKETS + POSSIBLE_SPACE;
+    public static final String ENDING_METHOD_CALL =
+            POSSIBLE_SPACE + CLOSE_BRACKETS + POSSIBLE_SPACE + COLON + POSSIBLE_SPACE;
     public static final String CONDITION_REGEX =
             "("+POSSIBLE_SPACE+BOOLEAN_VAR_REGEX+
                     "(?:"+POSSIBLE_SPACE+AND_OR+POSSIBLE_SPACE+BOOLEAN_VAR_REGEX+")*"+POSSIBLE_SPACE+")";
@@ -50,6 +51,11 @@ public class RegularExpressions {
                     POSSIBLE_SPACE + OPEN_BRACKETS + POSSIBLE_SPACE;
     public static final String RETURN_LINE_REGEX =
             POSSIBLE_SPACE + RETURN + POSSIBLE_SPACE + COLON + POSSIBLE_SPACE;
+    public static final String METHOD_ARGUMENTS_REGEX =
+            "((?:" + POSSIBLE_SPACE + ASSIGNMENT_VALUE + POSSIBLE_SPACE + ")?(?:"  + "," + POSSIBLE_SPACE +
+                    ASSIGNMENT_VALUE + POSSIBLE_SPACE + ")*)";
+    public static final String METHOD_CALL_REGEX = "";
+
 
 
     public static Pattern FINAL_PATTERN = Pattern.compile(POSSIBLE_SPACE + FINAL + MANDATORY_SPACE);
@@ -75,4 +81,8 @@ public class RegularExpressions {
     public static Pattern NEXT_ARGUMENT_PATTERN = Pattern.compile(NEXT_ARGUMENT_REGEX);
     public static Pattern ENDING_SCOPE_PATTERN = Pattern.compile(ENDING_SCOPE_REGEX);
     public static Pattern RETURN_LINE_PATTERN = Pattern.compile(RETURN_LINE_REGEX);
+    public static Pattern ARGUMENT_PATTERN = Pattern.compile(POSSIBLE_SPACE + ASSIGNMENT_VALUE);
+    public static Pattern END_METHOD_CALL_PATTERN = Pattern.compile(ENDING_METHOD_CALL);
+    public static Pattern IS_METHOD_CALL_PATTERN = Pattern.compile(
+            POSSIBLE_SPACE + FUNCTION_NAME_REGEX + POSSIBLE_SPACE + "\\(");
 }

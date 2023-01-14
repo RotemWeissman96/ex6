@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static opp6.ex6.main.RegularExpressions.*;
 
@@ -36,7 +35,7 @@ public class Sjavac {
                     continue;
                 }
                 if (line.startsWith("void")) {
-                    SaveAndSkip(bufferedReader, map, line);
+                    SaveAndSkipMethod(bufferedReader, map, line);
                     continue;
                 }
                 if (HashMapVariable.isLineVariableDeclaration(line)) {  // check if its a global declaration
@@ -125,8 +124,13 @@ public class Sjavac {
                     compileIfWhile(line, bufferedReader, currMap);
                 } else if (HashMapVariable.isLineVariableDeclaration(line)) {
                     compileVariableDeclaration(line, false, currMap);
-                } else { // assumes it's an assignment
-                    compileAssignment(line, currMap);
+                } else {
+                    Matcher matcher = IS_METHOD_CALL_PATTERN.matcher(line);
+                    if (matcher.lookingAt()) { // it's a method call
+                        compileMethodCall(line, currMap);
+                    } else { // assumes it's an assignment
+                        compileAssignment(line, currMap);
+                    }
                 }
             }
         }
@@ -229,6 +233,42 @@ public class Sjavac {
         compileScope(bufferedReader, currMap);
     }
 
+
+
+    private static void compileMethodCall(String line, HashMapVariable map){
+        Matcher matcher = FUNCTION_NAME_PATTERN.matcher(line);
+        if (matcher.lookingAt()){
+
+            String argumentList = line.substring(matcher.end());
+            ArrayList<String> argumentsType = methods.get(matcher.group(1));
+            if (argumentsType != null) {
+                for (String type : argumentsType) {
+                    matcher = ARGUMENT_PATTERN.matcher(argumentList); //TODO: this also get the , or ) for
+                    // set value, witch is not good
+                    if (matcher.lookingAt()){
+                        Variable testVar = VariableFactory.createVariable(type, false);
+                        testVar.setValue(matcher.group(1), map);
+                        argumentList = argumentList.substring(matcher.end());
+                    } else {
+                        System.out.println("raise error: this is not a valid argument list: " + line);
+                    }
+                    matcher = COMA_PATTERN.matcher(argumentList);
+                    if (matcher.lookingAt()){
+                        argumentList = argumentList.substring(matcher.end());
+                    }
+                }
+                matcher = END_METHOD_CALL_PATTERN.matcher(argumentList);
+                if (!matcher.matches()) {
+                    System.out.println("raise error: there are to few arguments or end of line out of order");
+                }
+            } else {
+                System.out.println("raise error: there is no method with that name: " + matcher.group(1));
+            }
+        } else {
+            System.out.println("raise error: this is not a valid function name");
+        }
+    }
+
     /**
      *
      * @param line
@@ -278,7 +318,8 @@ public class Sjavac {
      * @param bufferedReader
      * @throws IOException
      */
-    private static void SaveAndSkip(BufferedReader bufferedReader,HashMapVariable map, String line) throws IOException {
+    private static void SaveAndSkipMethod(BufferedReader bufferedReader, HashMapVariable map, String line)
+            throws IOException {
         compileMethodHead(map,line,true);
         int countBrackets = 1;
         while (countBrackets != 0 && (line = bufferedReader.readLine()) != null) {

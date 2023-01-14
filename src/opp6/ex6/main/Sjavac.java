@@ -3,6 +3,8 @@ package opp6.ex6.main;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 
 import static opp6.ex6.main.RegularExpressions.*;
@@ -10,7 +12,7 @@ import static opp6.ex6.main.RegularExpressions.*;
 //test
 public class Sjavac {
 
-
+    private static final HashMap<String, ArrayList<String>> methods = new HashMap<>();
     public static void main(String[] args) {
         try {
             HashMapVariable map = new HashMapVariable();
@@ -97,8 +99,11 @@ public class Sjavac {
 
     private static void compileScope(BufferedReader bufferedReader, HashMapVariable currMap) throws IOException{
         String line;
-        while ((line = bufferedReader.readLine()) != null) { //TODO: add condition end of scope
+        while ((line = bufferedReader.readLine()) != null) {
             line = line.trim();
+            if (line.startsWith("}") && line.substring(1).trim().equals("")){
+                break;
+            }
             if (line.startsWith("if") || line.startsWith("while")){
                 compileIfWhile(line, bufferedReader, currMap);
             } else if (HashMapVariable.isLineVariableDeclaration(line)) {
@@ -118,6 +123,7 @@ public class Sjavac {
     private static void compileIfWhile(String line, BufferedReader bufferedReader, HashMapVariable map)
             throws IOException { // throws InvalidValue / WrongSyntax
         HashMapVariable currMap = new HashMapVariable(map);
+        Variable var = null;
         Matcher matcher = WHILE_IF_PATTERN.matcher(line);
         if(matcher.matches()){
             String condition = matcher.group(1);
@@ -129,19 +135,19 @@ public class Sjavac {
                 } else { // assume it's a variable name
                     matcher = VAR_NAME_PATTERN.matcher(condition);
                     if (matcher.lookingAt()) {
-                        Variable var = map.getCurrentScope(matcher.group(1)); // first check local
-                        if (var != null){
-                            if (!VariableFactory.BOOLEAN_VALID_TYPES.contains(var.getType())){
-                                System.out.println("raise error: this variable is not boolean: " + matcher.group(1));
-                            }
-                        } else { // only if none local then check for an outer scope variable
-                            var = map.getOuterScope(matcher.group(1));
-                            if (!VariableFactory.BOOLEAN_VALID_TYPES.contains(var.getType())){
-                                System.out.println("raise error: this variable is not boolean: " + matcher.group(1));
+                        if ((var = map.getCurrentScope(matcher.group(1))) == null) { // first check local
+                            if ((var = map.getOuterScope(matcher.group(1))) == null) { // then check outer
+                                System.out.println("raise error: this variable does not exist: " + matcher.group(1));
+                                return;
                             }
                         }
+                        if (!VariableFactory.BOOLEAN_VALID_TYPES.contains(var.getType()) || !var.getValue()){
+                            //check if the type is boolean friendly and that the var was initiated
+                                System.out.println("raise error: this variable is not a initialized " +
+                                        "boolean: " + matcher.group(1));
+                        }
                     } else {
-                        System.out.println("raise error: this variable is not valid: " + condition);
+                        System.out.println("raise error: this variable name is not valid: " + condition);
                     }
                 }
             }
@@ -170,24 +176,17 @@ public class Sjavac {
     }
 
     private static String handlingCompileAssignment(String line, HashMapVariable map){
-        Variable localVariable = null, globalVariable = null, variable = null;
-        String name = null;
+        Variable variable = null;
         Matcher matcher = VAR_NAME_PATTERN.matcher(line);
         if (matcher.lookingAt()) {
-            name = matcher.group(1);
-            localVariable = map.getCurrentScope(name);
-            globalVariable = map.getOuterScope(name);
-            if(localVariable != null){
-                variable = localVariable;
-            }else {
-                variable = globalVariable;
-            }
-            if(variable == null){
-                System.out.println("raise error: this variable was not declared: " + name);
+            if((variable = map.getCurrentScope(matcher.group(1))) == null) {
+                if ((variable = map.getOuterScope(matcher.group(1))) == null) {
+                    System.out.println("raise error: this variable was not declared: " + matcher.group(1));
+                }
             }
             line = line.substring(matcher.end());
         } else {
-            System.out.println("raise error: that is not a valid variable name: " + line);
+            System.out.println("raise error: that is not a valid variable name: " + matcher.group(1));
         }
         matcher = ASSIGN_PATTERN.matcher(line);
         if (matcher.lookingAt()) {
@@ -195,7 +194,7 @@ public class Sjavac {
             variable.setValue(matcher.group(1), map);
             line = line.substring(matcher.end());
         } else {
-            System.out.println("raise error: assignment syntax error" + matcher.group(0));
+            System.out.println("raise error: assignment syntax error" + line);
         }
         return line;
     }

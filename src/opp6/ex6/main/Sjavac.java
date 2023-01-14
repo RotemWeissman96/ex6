@@ -136,7 +136,7 @@ public class Sjavac {
 
     private static void compileMethodHead( HashMapVariable currMap, String line, boolean globalRun)
             throws IOException { // throws InvalidValue / WrongSyntax
-        String functionName = null, type = null;
+        String functionName = null;
         Matcher matcher = VOID_PATTERN.matcher(line);
         // checking that the void has space from the name
         if (matcher.lookingAt()) {
@@ -153,15 +153,12 @@ public class Sjavac {
             System.out.println("raise error: the function name was not correct");
         }
         ArrayList<String> functionArguments = new ArrayList<>();
-        matcher = TYPE_PATTERN.matcher(line);
+        boolean finalVariable = false;
+        line = checkingFunctionArgument(functionArguments,line,currMap,finalVariable);
+        matcher = NEXT_ARGUMENT_PATTERN.matcher(line);
         while (matcher.lookingAt()) {
-            type = matcher.group(1);
-            Variable variable = VariableFactory.createVariable(type, false);
-            functionArguments.add(type);
-            String name = "";
             line = line.substring(matcher.end());
-            line = validatingName(line, currMap, variable);
-
+            line = checkingFunctionArgument(functionArguments,line,currMap,finalVariable);
             matcher = NEXT_ARGUMENT_PATTERN.matcher(line);
         }
         if(globalRun){
@@ -171,9 +168,28 @@ public class Sjavac {
         if(!matcher.matches()){
             System.out.println("the function dos not end well");
         }
-//        if(!compileScope(bufferedReader,currMap)){
-//            System.out.println("there wasn't a closing bracket");
-//        }
+    }
+
+
+    private static String checkingFunctionArgument
+            (ArrayList<String> functionArguments, String line,
+             HashMapVariable currMap, Boolean finalVariable){
+        Matcher matcher = FINAL_PATTERN.matcher(line);
+        if (matcher.lookingAt()){
+            finalVariable = true;
+            line = line.substring(matcher.end());
+        }
+        matcher = TYPE_PATTERN.matcher(line);
+        if(!matcher.lookingAt()) {
+            System.out.println("raise error: that variable type does not exist");
+        }
+        String type = matcher.group(1);
+        Variable variable = VariableFactory.createVariable(type, false);
+        variable.setFinale(finalVariable);
+        functionArguments.add(type);
+        line = line.substring(matcher.end());
+        return validatingName(line, currMap, variable);
+
     }
 
     private static void compileIfWhile(String line, BufferedReader bufferedReader, HashMapVariable map)

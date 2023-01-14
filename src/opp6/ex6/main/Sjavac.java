@@ -81,12 +81,12 @@ public class Sjavac {
             System.out.println("raise error: that variable type does not exist");
         }
         // check for variables
-        line = map.addVariableFromLineStart(line, type, global, finalVariable);
+        line = addVariableFromLineStart(line, type, global, finalVariable, map);
         matcher = COMA_PATTERN.matcher(line);
         // if there is "," then there is another variable
         while (matcher.lookingAt()) {
             line = line.substring(matcher.end());
-            line = map.addVariableFromLineStart(line, type, global, finalVariable);
+            line = addVariableFromLineStart(line, type, global, finalVariable, map);
             matcher = COMA_PATTERN.matcher(line);
         }
         matcher = COLON_PATTERN.matcher(line);
@@ -220,6 +220,46 @@ public class Sjavac {
         if(line == null) {
             System.out.println("raise error: some scope was not closed");
         }
+    }
+
+    /**
+     * get a line that was already compiled and the next 1 or 2 words should be a variable and an
+     * assignment or a variable without an assignment
+     * @param line the current line to compile
+     * @param type the type of variable
+     * @param global is this variable global
+     * @param finalVariable is this variable final
+     * @return the line after the variable declaration
+     */
+    public static String addVariableFromLineStart(String line, String type, boolean global, boolean finalVariable,
+                                           HashMapVariable map){
+        // throws InvalidValue / WrongSyntax
+        // check type
+        String name = "";
+        Matcher matcher = VAR_NAME_PATTERN.matcher(line);
+        if (matcher.lookingAt()) {
+            name = matcher.group(1);
+            if (map.getCurrentScope(name) != null){
+                System.out.println("raise error 8");
+            }
+            line = line.substring(matcher.end());
+        } else {
+            System.out.println("raise error 2");
+        }
+        Variable variable = VariableFactory.createVariable(type, global);
+        matcher = ASSIGN_PATTERN.matcher(line);
+        map.putCurrentScope(name, variable);
+
+        if (matcher.lookingAt()) {
+            variable.setValue(matcher.group(1), map);
+            variable.setFinale(finalVariable); // set final to true only after value assignment
+            line = line.substring(matcher.end());
+        } else {
+            if (finalVariable) { // if it's a final variable there must be assignment
+                System.out.println("raise error 1");
+            }
+        }
+        return line;
     }
 }
 

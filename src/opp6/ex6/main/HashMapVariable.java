@@ -30,43 +30,7 @@ public class HashMapVariable {
     }
 
 
-    /**
-     * get a line that was already compiled and the next 1 or 2 words should be a variable and an
-     * assignment or a variable without an assignment
-     * @param line the current line to compile
-     * @param type the type of variable
-     * @param global is this variable global
-     * @param finalVariable is this variable final
-     * @return the line after the variable declaration
-     */
-    public String addVariableFromLineStart(String line, String type, boolean global, boolean finalVariable){
-        // throws InvalidValue / WrongSyntax
-        // check type
-        String name = "";
-        Matcher matcher = VAR_NAME_PATTERN.matcher(line);
-        if (matcher.lookingAt()) {
-            name = matcher.group(1);
-            if (this.currentScope.containsKey(name)){
-                System.out.println("raise error 8");
-            }
-            line = line.substring(matcher.end());
-        } else {
-            System.out.println("raise error 2");
-        }
-        Variable variable = VariableFactory.createVariable(type, global);
-        matcher = ASSIGN_PATTERN.matcher(line);
-        this.currentScope.put(name, variable);
-        if (matcher.lookingAt()) {
-            variable.setValue(matcher.group(1), this);
-            variable.setFinale(finalVariable); // set final to true only after value assignment
-            line = line.substring(matcher.end());
-        } else {
-            if (finalVariable) { // if it's a final variable there must be assignment
-                System.out.println("raise error 1");
-            }
-        }
-        return line;
-    }
+
     public static boolean isLineVariableDeclaration(String line){
         for (String type : ALLOWED_TYPES){
             if (line.startsWith(type)){
@@ -102,7 +66,7 @@ public class HashMapVariable {
         System.out.println("\n==outerScope==\n");
         this.outerScope.forEach((key, value) -> System.out.println(key + ":" + value.getType()));
     }
-    public void setCurrentScope(String name, Variable variable){
+    public void putCurrentScope(String name, Variable variable){
         this.currentScope.put(name,variable);
     }
 }

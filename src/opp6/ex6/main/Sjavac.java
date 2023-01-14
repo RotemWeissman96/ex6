@@ -68,7 +68,7 @@ public class Sjavac {
 
     private static void compileMethodBody(BufferedReader bufferedReader, HashMapVariable map, String line) throws IOException{
         HashMapVariable currMap = new HashMapVariable(map);
-        compileMethodHead(bufferedReader,currMap,line,false);
+        compileMethodHead(currMap,line,false);
         if(!compileScope(bufferedReader,currMap)){
             System.out.println("raise error: this method ended with } without doing return;");
         }
@@ -134,7 +134,7 @@ public class Sjavac {
         return false;
     }
 
-    private static void compileMethodHead(BufferedReader bufferedReader, HashMapVariable currMap, String line, boolean globalRun)
+    private static void compileMethodHead( HashMapVariable currMap, String line, boolean globalRun)
             throws IOException { // throws InvalidValue / WrongSyntax
         String functionName = null, type = null;
         Matcher matcher = VOID_PATTERN.matcher(line);
@@ -263,41 +263,7 @@ public class Sjavac {
      * @throws IOException
      */
     private static void SaveAndSkip(BufferedReader bufferedReader,HashMapVariable map, String line) throws IOException {
-        compileMethodHead(bufferedReader,map,line,true);
-        HashMapVariable currMap = new HashMapVariable(map);
-        String functionName = null, type = null;
-        Matcher matcher = VOID_PATTERN.matcher(line);
-        // checking that the void has space from the name
-        if (matcher.lookingAt()) {
-            line = line.substring(matcher.end());
-        } else {
-            System.out.println("raise error: the void does not have space from the name");
-        }
-        //check  if the name is like is supposed to be
-        matcher = FUNCTION_NAME_PATTERN.matcher(line);
-        if (matcher.lookingAt()) {
-            functionName =  matcher.group(1);
-            line = line.substring(matcher.end());
-        } else {
-            System.out.println("raise error: the function name was not correct");
-        }
-        ArrayList<String> functionArguments = new ArrayList<>();
-        matcher = TYPE_PATTERN.matcher(line);
-        while (matcher.lookingAt()) {
-            type = matcher.group(1);
-            Variable variable = VariableFactory.createVariable(type, false);
-            functionArguments.add(type);
-            line = line.substring(matcher.end());
-            line = validatingName(line, currMap, variable);
-
-            matcher = NEXT_ARGUMENT_PATTERN.matcher(line);
-        }
-        methods.put(functionName,functionArguments);
-        matcher = ENDING_SCOPE_PATTERN.matcher(line);
-        if(!matcher.matches()){
-            System.out.println("the function dos not end well");
-        }
-
+        compileMethodHead(map,line,true);
         int countBrackets = 1;
         while (countBrackets != 0 && (line = bufferedReader.readLine()) != null) {
             line = line.trim();

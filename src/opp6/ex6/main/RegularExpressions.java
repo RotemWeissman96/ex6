@@ -26,38 +26,40 @@ public class RegularExpressions {
                                 MANDATORY_SPACE = "\\s",
                                 POSSIBLE_SPACE = "\\s*",
                                 COLON =";",
-                                COMA = ",";
+                                COMA = ",",
+                                OPEN_BRACKETS = "\\(",
+                                CLOSE_BRACKETS = "\\)",
+                                OPEN_CURLY_BRACKETS = "\\{",
+                                CLOSE_CURLY_BRACKETS = "\\}";
+
     public static final String ASSIGNMENT_VALUE = "("+IS_CHAR + "|" + IS_STRING + "|" + "(?:[^\\s;,]+))";
 
 
     public static final String VAR_NAME_REGEX = "((?:[a-zA-Z][_\\w]*)|(?:_[_\\w]+))";
+
+    public static final String FUNCTION_NAME_REGEX = "([a-zA-Z][_\\w]*)";
     public static final String ALL_BOOLEAN_REGEX =
            "(?:" + IS_BOOLEAN + "|" + IS_DOUBLE + "|" + IS_INT + ")";
     public static final String BOOLEAN_VAR_REGEX = "(?:"+ALL_BOOLEAN_REGEX + "|" + VAR_NAME_REGEX + ")";
     public static final String AND_OR = "(?:(?:\\|\\|)|(?:&&))";
+
+    public static final String NEXT_ELEMENT_FUNCTION =
+            POSSIBLE_SPACE + "," + POSSIBLE_SPACE + TYPE + MANDATORY_SPACE;
+    public static final String ENDING_FUNCTION_NAME =
+            POSSIBLE_SPACE + CLOSE_BRACKETS + POSSIBLE_SPACE + OPEN_CURLY_BRACKETS;
     public static final String CONDITION_REGEX =
             "("+POSSIBLE_SPACE+ALL_BOOLEAN_REGEX+
                     "(?:"+POSSIBLE_SPACE+AND_OR+POSSIBLE_SPACE+BOOLEAN_VAR_REGEX+")*"+POSSIBLE_SPACE+")";
     public static final String WHILE_IF_REGEX =
             POSSIBLE_SPACE+"(?:"+IF+"|"+WHILE+")"+POSSIBLE_SPACE+"\\("+CONDITION_REGEX + "\\)" +
                     POSSIBLE_SPACE + COLON + POSSIBLE_SPACE;
-
-
-//    public static final String SINGLE_ASSIGNMENT =
-//            VAR_NAME_REGEX + POSSIBLE_SPACE + EQUAL + POSSIBLE_SPACE + ASSIGNMENT_VALUE;
-//    public static final String SINGLE_VARIABLE_DECLARATION_ASSIGN =
-//            TYPE + MANDATORY_SPACE + SINGLE_ASSIGNMENT + POSSIBLE_SPACE + COLON + POSSIBLE_SPACE;
-//    public static final String SINGLE_VARIABLE_DECLARATION =
-//            TYPE + MANDATORY_SPACE + VAR_NAME_REGEX + POSSIBLE_SPACE + COLON + POSSIBLE_SPACE;
-//    public static final String MULTI_VARIABLE_DECLARATION_ASSIGN =
-//            TYPE + MANDATORY_SPACE + SINGLE_ASSIGNMENT + POSSIBLE_SPACE + COLON + POSSIBLE_SPACE;
-//    public static final String MULTI_VARIABLE_DECLARATION =
-//            TYPE + MANDATORY_SPACE + VAR_NAME_REGEX + POSSIBLE_SPACE + COLON + POSSIBLE_SPACE;
-//
-//
-//    public static Pattern LEGAL_VARIABLE = Pattern.compile(VARIABLE_ASSIGN);
     public static Pattern FINAL_PATTERN = Pattern.compile(POSSIBLE_SPACE + FINAL + MANDATORY_SPACE);
+    public static Pattern VOID_PATTERN =
+            Pattern.compile(POSSIBLE_SPACE + VOID + MANDATORY_SPACE);
     public static Pattern TYPE_PATTERN = Pattern.compile(POSSIBLE_SPACE + TYPE + MANDATORY_SPACE);
+
+    public static Pattern FUNCTION_NAME_PATTERN =
+            Pattern.compile(POSSIBLE_SPACE + FUNCTION_NAME_REGEX + POSSIBLE_SPACE + OPEN_BRACKETS);
     public static Pattern VAR_NAME_PATTERN = Pattern.compile(POSSIBLE_SPACE + VAR_NAME_REGEX);
     public static Pattern ASSIGN_PATTERN = Pattern.compile(
             POSSIBLE_SPACE + EQUAL + POSSIBLE_SPACE +  ASSIGNMENT_VALUE);
@@ -71,4 +73,6 @@ public class RegularExpressions {
     public static Pattern STRING_PATTERN = Pattern.compile(IS_STRING);
     public static Pattern WHILE_IF_PATTERN = Pattern.compile(WHILE_IF_REGEX);
     public static Pattern ALL_BOOLEAN_PATTERN = Pattern.compile(ALL_BOOLEAN_REGEX);
+    public static Pattern NEXT_ARGUMENT_FUNCTION = Pattern.compile(NEXT_ELEMENT_FUNCTION);
+    public static Pattern ENDING_FUNCTION_LINE = Pattern.compile(ENDING_FUNCTION_NAME);
 }

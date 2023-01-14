@@ -57,7 +57,7 @@ public class Sjavac {
             while ((line = bufferedReader.readLine()) != null) {
                 line = line.trim();
                 if (line.startsWith(VOID)) {
-                    compileMethod(bufferedReader, map);
+                    compileMethod(bufferedReader, map,line);
                 }
             }
         } catch (IOException e) {
@@ -114,10 +114,48 @@ public class Sjavac {
         }
     }
 
-    private static void compileMethod(BufferedReader bufferedReader, HashMapVariable map)
+    private static void compileMethod(BufferedReader bufferedReader, HashMapVariable map, String line)
             throws IOException { // throws InvalidValue / WrongSyntax
         HashMapVariable currMap = new HashMapVariable(map);
-        //TODO: compile a method
+        String functionName = null, type = null;
+        Matcher matcher = VOID_PATTERN.matcher(line);
+        // checking that the void has space from the name
+        if (matcher.lookingAt()) {
+            line = line.substring(matcher.end());
+        } else {
+            System.out.println("raise error: the void dos not have space from the name");
+        }
+        //check  if the name is like is supposed to be
+        matcher = FUNCTION_NAME_PATTERN.matcher(line);
+        if (matcher.lookingAt()) {
+            functionName =  matcher.group(1);
+            line = line.substring(matcher.end());
+        } else {
+            System.out.println("raise error: the function name was not correct");
+        }
+        ArrayList<String> functionArguments = new ArrayList<>();
+        matcher = TYPE_PATTERN.matcher(line);
+        while (matcher.lookingAt()) {
+            type = matcher.group(1);
+            functionArguments.add(type);
+            String name = "";
+            line = line.substring(matcher.end());
+            matcher = VAR_NAME_PATTERN.matcher(line);
+            if (matcher.lookingAt()) {
+                name = matcher.group(1);
+                line = line.substring(matcher.end());
+            } else {
+                System.out.println("the name wast not current for one of the function arguments");
+            }
+            matcher = NEXT_ARGUMENT_FUNCTION.matcher(line);
+        }
+        methods.put(functionName,functionArguments);
+        matcher = ENDING_FUNCTION_LINE.matcher(line);
+        if(matcher.matches()){
+            compileScope(bufferedReader,currMap);
+        }else {
+            System.out.println("the function dos not end well");
+        }
     }
 
     private static void compileIfWhile(String line, BufferedReader bufferedReader, HashMapVariable map)
@@ -168,6 +206,10 @@ public class Sjavac {
             line = line.substring(matcher.end());
             line = handlingCompileAssignment(line, map);
             matcher = COMA_PATTERN.matcher(line);
+        }
+        matcher = COLON_PATTERN.matcher(line);
+        if (!matcher.lookingAt()) {  // end of line must be ;
+            System.out.println("raise error: line must end with ;");
         }
         //TODO: compile assignment, check if variable exist in current scope, use Variable.setValue function
         //TODO: handle an uninitialized global or outer scope variable as a new variable in current scope

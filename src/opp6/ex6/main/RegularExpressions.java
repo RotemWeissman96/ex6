@@ -39,7 +39,7 @@ public class RegularExpressions {
     public static final String AND_OR = "(?:(?:\\|\\|)|(?:&&))";
 
     public static final String NEXT_ARGUMENT_REGEX =
-            POSSIBLE_SPACE + "," + POSSIBLE_SPACE + TYPE + MANDATORY_SPACE;
+            POSSIBLE_SPACE + COMA + POSSIBLE_SPACE + TYPE + MANDATORY_SPACE;
     public static final String ENDING_SCOPE_REGEX =
             POSSIBLE_SPACE + CLOSE_BRACKETS + POSSIBLE_SPACE + OPEN_CURLY_BRACKETS + POSSIBLE_SPACE;
     public static final String CONDITION_REGEX =

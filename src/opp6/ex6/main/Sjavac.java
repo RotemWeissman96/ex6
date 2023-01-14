@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static opp6.ex6.main.RegularExpressions.*;
 
@@ -145,19 +146,9 @@ public class Sjavac {
             type = matcher.group(1);
             Variable variable = VariableFactory.createVariable(type, false);
             functionArguments.add(type);
-            String name = "";
             line = line.substring(matcher.end());
-            matcher = VAR_NAME_PATTERN.matcher(line);
-            if (matcher.lookingAt()) {
-                name = matcher.group(1);
-                line = line.substring(matcher.end());
-                if(currMap.getCurrentScope(name) != null){
-                    System.out.println("the scope already hase the name");
-                }
-            } else {
-                System.out.println("the name wast not current for one of the function arguments");
-            }
-            currMap.putCurrentScope(name,variable);
+            line = validatingName(line, currMap, variable);
+
             matcher = NEXT_ARGUMENT_PATTERN.matcher(line);
         }
         methods.put(functionName,functionArguments);
@@ -165,7 +156,9 @@ public class Sjavac {
         if(!matcher.matches()){
             System.out.println("the function dos not end well");
         }
-        compileScope(bufferedReader,currMap);
+        if(!compileScope(bufferedReader,currMap)){
+            System.out.println("there wasn't a closing bracket");
+        }
     }
 
     private static void compileIfWhile(String line, BufferedReader bufferedReader, HashMapVariable map)
@@ -191,7 +184,7 @@ public class Sjavac {
                         }
                         if (!VariableFactory.BOOLEAN_VALID_TYPES.contains(var.getType()) || !var.getValue()){
                             //check if the type is boolean friendly and that the var was initiated
-                                System.out.println("raise error: this variable is not an initialized " +
+                                System.out.println("raise error: this variable is not a initialized " +
                                         "boolean: " + matcher.group(1));
                         }
                     } else {
@@ -222,10 +215,6 @@ public class Sjavac {
         if (!matcher.lookingAt()) {  // end of line must be ;
             System.out.println("raise error: line must end with ;");
         }
-        //TODO: compile assignment, check if variable exist in current scope, use Variable.setValue function
-        //TODO: handle an uninitialized global or outer scope variable as a new variable in current scope
-        //TODO: add a closing line condition (for ;) and a raise error print
-        //TODO: if this line is not an assignment then its an error because its the last option to check
     }
 
     private static String handlingCompileAssignment(String line, HashMapVariable map){
@@ -259,6 +248,7 @@ public class Sjavac {
      * @throws IOException
      */
     private static void skipMethod(BufferedReader bufferedReader) throws IOException {
+
         int countBrackets = 1;
         String line = null;
         while (countBrackets != 0 && (line = bufferedReader.readLine()) != null) {
@@ -287,6 +277,22 @@ public class Sjavac {
                                            HashMapVariable map){
         // throws InvalidValue / WrongSyntax
         // check type
+        Variable variable = VariableFactory.createVariable(type, global);
+        line = validatingName(line, map, variable);
+        Matcher matcher = ASSIGN_PATTERN.matcher(line);
+        if (matcher.lookingAt()) {
+            variable.setValue(matcher.group(1), map);
+            variable.setFinale(finalVariable); // set final to true only after value assignment
+            line = line.substring(matcher.end());
+        } else {
+            if (finalVariable) { // if it's a final variable there must be assignment
+                System.out.println("raise error 1");
+            }
+        }
+        return line;
+    }
+
+    private static String validatingName(String line,  HashMapVariable map, Variable variable){
         String name = "";
         Matcher matcher = VAR_NAME_PATTERN.matcher(line);
         if (matcher.lookingAt()) {
@@ -298,18 +304,7 @@ public class Sjavac {
         } else {
             System.out.println("raise error: this is not a valid variable name: " + line);
         }
-        Variable variable = VariableFactory.createVariable(type, global);
-        matcher = ASSIGN_PATTERN.matcher(line);
         map.putCurrentScope(name, variable);
-        if (matcher.lookingAt()) {
-            variable.setValue(matcher.group(1), map);
-            variable.setFinale(finalVariable); // set final to true only after value assignment
-            line = line.substring(matcher.end());
-        } else {
-            if (finalVariable) { // if it's a final variable there must be assignment
-                System.out.println("raise error cant declare a final variable with no assignment: " + name);
-            }
-        }
         return line;
     }
 

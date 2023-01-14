@@ -54,7 +54,6 @@ public class RegularExpressions {
     public static final String METHOD_ARGUMENTS_REGEX =
             "((?:" + POSSIBLE_SPACE + ASSIGNMENT_VALUE + POSSIBLE_SPACE + ")?(?:"  + "," + POSSIBLE_SPACE +
                     ASSIGNMENT_VALUE + POSSIBLE_SPACE + ")*)";
-    public static final String METHOD_CALL_REGEX = "";
 
 
 

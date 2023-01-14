@@ -63,15 +63,6 @@ public class Sjavac {
         }
     }
 
-    private static void compileMethodBody(BufferedReader bufferedReader, HashMapVariable map, String line) throws IOException{
-        HashMapVariable currMap = new HashMapVariable(map);
-        compileMethodHead(currMap,line,false);
-        if(!compileScope(bufferedReader,currMap)){
-            System.out.println("raise error: this method ended with } without doing return;");
-        }
-
-    }
-
     private static void compileVariableDeclaration(String line, boolean global, HashMapVariable map) {
         String type = null;
         boolean finalVariable = false;
@@ -136,6 +127,15 @@ public class Sjavac {
         return false;
     }
 
+    private static void compileMethodBody(BufferedReader bufferedReader, HashMapVariable map, String line) throws IOException{
+        HashMapVariable currMap = new HashMapVariable(map);
+        compileMethodHead(currMap,line,false);
+        if(!compileScope(bufferedReader,currMap)){
+            System.out.println("raise error: this method ended with } without doing return;");
+        }
+
+    }
+
     private static void compileMethodHead( HashMapVariable currMap, String line, boolean globalRun)
             throws IOException { // throws InvalidValue / WrongSyntax
         String functionName = null;
@@ -156,11 +156,11 @@ public class Sjavac {
         }
         ArrayList<String> functionArguments = new ArrayList<>();
         boolean finalVariable = false;
-        line = checkingFunctionArgument(functionArguments,line,currMap,finalVariable);
+        line = checkingFunctionArgument(functionArguments,line,currMap,finalVariable, globalRun);
         matcher = RegularExpressions.NEXT_ARGUMENT_PATTERN.matcher(line);
         while (matcher.lookingAt()) {
             line = line.substring(matcher.end());
-            line = checkingFunctionArgument(functionArguments,line,currMap,finalVariable);
+            line = checkingFunctionArgument(functionArguments,line,currMap,finalVariable, globalRun);
             matcher = RegularExpressions.NEXT_ARGUMENT_PATTERN.matcher(line);
         }
         if(globalRun){
@@ -173,9 +173,9 @@ public class Sjavac {
     }
 
 
-    private static String checkingFunctionArgument
-            (ArrayList<String> functionArguments, String line,
-             HashMapVariable currMap, Boolean finalVariable){
+    private static String checkingFunctionArgument(
+            ArrayList<String> functionArguments, String line,
+             HashMapVariable currMap, Boolean finalVariable, boolean globalRun){
         Matcher matcher = RegularExpressions.FINAL_PATTERN.matcher(line);
         if (matcher.lookingAt()){
             finalVariable = true;
@@ -190,8 +190,26 @@ public class Sjavac {
         variable.setFinale(finalVariable);
         functionArguments.add(type);
         line = line.substring(matcher.end());
-        return validatingName(line, currMap, variable);
+        return validatingName(line, currMap, variable, globalRun);
+    }
 
+    private static String validatingName(String line,  HashMapVariable map, Variable variable,
+                                         boolean globalRun){
+        String name = "";
+        Matcher matcher = RegularExpressions.VAR_NAME_PATTERN.matcher(line);
+        if (matcher.lookingAt()) {
+            name = matcher.group(1);
+            if (map.getCurrentScope(name) != null){
+                System.out.println("raise error: this variable name is already used in this scope: " + name);
+            }
+            line = line.substring(matcher.end());
+        } else {
+            System.out.println("raise error: this is not a valid variable name: " + line);
+        }
+        if (!globalRun){
+            map.putCurrentScope(name, variable);
+        }
+        return line;
     }
 
     private static void compileIfWhile(String line, BufferedReader bufferedReader, HashMapVariable map)
@@ -347,7 +365,7 @@ public class Sjavac {
         // throws InvalidValue / WrongSyntax
         // check type
         Variable variable = VariableFactory.createVariable(type, global);
-        line = validatingName(line, map, variable);
+        line = validatingName(line, map, variable, false);
         Matcher matcher = RegularExpressions.ASSIGN_PATTERN.matcher(line);
         if (matcher.lookingAt()) {
             variable.setValue(matcher.group(1), map);
@@ -361,21 +379,7 @@ public class Sjavac {
         return line;
     }
 
-    private static String validatingName(String line,  HashMapVariable map, Variable variable){
-        String name = "";
-        Matcher matcher = RegularExpressions.VAR_NAME_PATTERN.matcher(line);
-        if (matcher.lookingAt()) {
-            name = matcher.group(1);
-            if (map.getCurrentScope(name) != null){
-                System.out.println("raise error: this variable name is already used in this scope: " + name);
-            }
-            line = line.substring(matcher.end());
-        } else {
-            System.out.println("raise error: this is not a valid variable name: " + line);
-        }
-        map.putCurrentScope(name, variable);
-        return line;
-    }
+
 
 }
 

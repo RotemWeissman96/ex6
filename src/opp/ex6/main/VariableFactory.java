@@ -18,17 +18,16 @@ public class VariableFactory {
     /**
      *
      * @param type
-     * @param global
      * @return
      */
-    public static Variable createVariable(String type, boolean global){
+    public static Variable createVariable(String type){
         ArrayList<String> validTypes = validTypeAssignment(type);
         assert (validTypes != null);
         Pattern[] regexExpressions = new Pattern[validTypes.size()];
         for (int i = 0; i < validTypes.size(); i ++) {
             regexExpressions[i] = typeRegex(validTypes.get(i));
         }
-        return new Variable(type, global, regexExpressions, validTypes);
+        return new Variable(type, regexExpressions, validTypes);
     }
 
     /**

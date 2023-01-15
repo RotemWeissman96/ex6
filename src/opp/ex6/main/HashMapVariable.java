@@ -67,17 +67,18 @@ public class HashMapVariable {
         this.currentScope.put(name,variable);
     }
 
-    public String validatingName(String line, Variable variable, boolean globalRun){
+    public String validatingName(String line, Variable variable, boolean globalRun)
+        throws SjavacException{
         String name = "";
         Matcher matcher = RegularExpressions.VAR_NAME_PATTERN.matcher(line);
         if (matcher.lookingAt()) {
             name = matcher.group(1);
             if (this.getCurrentScope(name) != null && !globalRun){
-                System.out.println("raise error: this variable name is already used in this scope: " + name);
+                throw new SjavacException(SjavacException.VAR_ALREADY_EXIST_ERR + name);
             }
             line = line.substring(matcher.end());
         } else {
-            System.out.println("raise error: this is not a valid variable name: " + line);
+            throw new SjavacException(SjavacException.INVALID_VAR_NAME_ERR + line);
         }
         if (!globalRun){
             this.putCurrentScope(name, variable);

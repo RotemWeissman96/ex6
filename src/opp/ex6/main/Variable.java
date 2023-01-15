@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 
 public class Variable {
     private final String type;
-    private final boolean global;
     private boolean finalVariable;
     private boolean value;
     // it's a list, so we can support double to be assigned with int and double
@@ -16,14 +15,13 @@ public class Variable {
     /**
      * this is the constructor for the variable
      * @param type the type of the argument
-     * @param global if its a global argument
      * @param typesPatterns the list of all the type arguments pattern
      * @param allowedTypesAssignment  the list of all the type arguments string names
      */
-    public Variable(String type, boolean global,  Pattern[] typesPatterns,
+    public Variable(String type,  Pattern[] typesPatterns,
                     ArrayList<String> allowedTypesAssignment) {
         this.type = type;
-        this.global = global;
+
         this.finalVariable = false;
         this.typesPatterns = typesPatterns;
         this.allowedTypesAssignment = allowedTypesAssignment;
@@ -38,14 +36,6 @@ public class Variable {
         return type;
     }
 
-//    /**
-//     *
-//     * @return
-//     */
-//    public boolean getGlobal(){
-//        return global;
-//    }
-
     /**
      * get the value of the Variable
      * @return boolean true or false value
@@ -59,11 +49,10 @@ public class Variable {
      * @param value
      * @param map
      */
-    public void setValue(String value, HashMapVariable map) {
-        // throws invalidValueException or VariableDoesNotExist (for variable assignment)
+    public void setValue(String value, HashMapVariable map) throws SjavacException{
         //TODO: analyze the value string, throw exception if its not legal
         if (this.finalVariable){ // cant assign values to final variables
-            System.out.println("raise error: cant assign a value to finale variable");
+            throw new SjavacException(SjavacException.ASSIGN_TO_FINAL_ERR);
         }
         for (Pattern p : this.typesPatterns) { //if it's a valid value to assign
             if (p.matcher(value).matches()){
@@ -78,9 +67,8 @@ public class Variable {
             if (map.getCurrentScope(value).getValue()){
                 this.value = true;
             } else {
-                System.out.println("raise error: there is an inner scope variable with different type " +
-                        "or a null");
-                System.out.println(this.type + " : " + value);
+                throw new SjavacException(SjavacException.IN_NULL_OR_DIFF_TYPE_ERR +
+                        "\n" + this.type + " : " + value);
             }
         } else { // if there is only outer scope variable - only then its deciding
             if (map.getOuterScope(value) != null  &&
@@ -88,13 +76,12 @@ public class Variable {
                 if (map.getOuterScope(value).getValue()){
                     this.value = true;
                 } else {
-                    System.out.println("raise error: there is an outer scope variable with different type " +
-                            "or a null");
-                    System.out.println(this.type + " : " + value);
+                    throw new SjavacException(SjavacException.OUT_NULL_OR_DIFF_TYPE_ERR +
+                            "\n" + this.type + " : " + value);
                 }
             } else {
-                System.out.println("raise error: not a valid assignment");
-                System.out.println(this.type + " : " + value);
+                throw new SjavacException(SjavacException.INVALID_ASSIGN_ERR +
+                        "\n" + this.type + " : " + value);
             }
         }
     }
@@ -109,10 +96,10 @@ public class Variable {
     /**
      *
      * @param line
-     * @param global
      * @param map
      */
-    public static void compileVariableDeclaration(String line, boolean global, HashMapVariable map) {
+    public static void compileVariableDeclaration(String line, HashMapVariable map)
+        throws SjavacException{
         String type = null;
         boolean finalVariable = false;
         // check final
@@ -127,20 +114,20 @@ public class Variable {
             type = matcher.group(1);
             line = line.substring(matcher.end());
         } else {
-            System.out.println("raise error: that variable type does not exist");
+            throw new SjavacException(SjavacException.INVALID_VAR_TYPE_ERR + line);
         }
         // check for variables
-        line = addVariableFromLineStart(line, type, global, finalVariable, map);
+        line = addVariableFromLineStart(line, type, finalVariable, map);
         matcher = RegularExpressions.COMA_PATTERN.matcher(line);
         // if there is "," then there is another variable
         while (matcher.lookingAt()) {
             line = line.substring(matcher.end());
-            line = addVariableFromLineStart(line, type, global, finalVariable, map);
+            line = addVariableFromLineStart(line, type, finalVariable, map);
             matcher = RegularExpressions.COMA_PATTERN.matcher(line);
         }
         matcher = RegularExpressions.COLON_PATTERN.matcher(line);
         if (!matcher.lookingAt()) {  // end of line must be ;
-            System.out.println("raise error: line must end with ;");
+            throw new SjavacException(SjavacException.END_COLON_ERR);
         }
     }
 
@@ -149,15 +136,15 @@ public class Variable {
      * assignment or a variable without an assignment
      * @param line the current line to compile
      * @param type the type of variable
-     * @param global is this variable global
      * @param finalVariable is this variable final
      * @return the line after the variable declaration
      */
-    public static String addVariableFromLineStart(String line, String type, boolean global, boolean finalVariable,
-                                                  HashMapVariable map){
-        // throws InvalidValue / WrongSyntax
+    public static String addVariableFromLineStart(String line,
+                                                  String type,
+                                                  boolean finalVariable,
+                                                  HashMapVariable map) throws SjavacException{
         // check type
-        Variable variable = VariableFactory.createVariable(type, global);
+        Variable variable = VariableFactory.createVariable(type);
         line = map.validatingName(line, variable, false);
         Matcher matcher = RegularExpressions.ASSIGN_PATTERN.matcher(line);
         if (matcher.lookingAt()) {
@@ -166,7 +153,7 @@ public class Variable {
             line = line.substring(matcher.end());
         } else {
             if (finalVariable) { // if it's a final variable there must be assignment
-                System.out.println("raise error: cant declare a final with no assignment");
+                throw new SjavacException(SjavacException.UNASSIGNED_FINAL_ERR);
             }
         }
         return line;

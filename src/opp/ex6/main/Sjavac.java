@@ -20,14 +20,17 @@ public class Sjavac {
         try {
             HashMapVariable map = new HashMapVariable();
             // we run first time on the file to get all the global argument and to know all the functions
-            // we have
             globalSearch(args[1], map);
-            //map.printMaps();
             // the second time we run throw the file we also go to the function search
             functionsSearch(args[1], map);
+            System.out.println(0);
         } catch (IOException e) {
+            System.out.println(2);
             e.printStackTrace(); // print 2
-        } //TODO: catch InvalidValue / WrongSyntax
+        } catch (SjavacException e) {
+            System.out.println(1);
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -37,7 +40,7 @@ public class Sjavac {
      * @throws IOException
      */
     private static void globalSearch(String path, HashMapVariable map)
-            throws IOException { // throws InvalidValue / WrongSyntax
+            throws IOException, SjavacException { // throws InvalidValue / WrongSyntax
         String line;
         try (FileReader fileReader = new FileReader(path);
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
@@ -52,7 +55,7 @@ public class Sjavac {
                 }
                 // checks if it what of global types
                 if (HashMapVariable.isLineVariableDeclaration(line)) {  // check if it's a global declaration
-                    Variable.compileVariableDeclaration(line, true, map);
+                    Variable.compileVariableDeclaration(line, map);
                     continue;
                 }
                 Scope.compileAssignment(line, map);
@@ -68,7 +71,7 @@ public class Sjavac {
      * @param path the path where the file is currently
      * @param map a hash map to save all the global arguments
      */
-    private static void functionsSearch(String path, HashMapVariable map) {  // throws InvalidValue / WrongSyntax
+    private static void functionsSearch(String path, HashMapVariable map) throws SjavacException, IOException{
         String line;
         try (FileReader fileReader = new FileReader(path);
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {

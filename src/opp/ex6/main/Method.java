@@ -26,12 +26,13 @@ public class Method {
      * @param line the current line in the file
      * @throws IOException
      */
-    public void compileMethodBody(BufferedReader bufferedReader, HashMapVariable map, String line) throws IOException {
+    public void compileMethodBody(BufferedReader bufferedReader, HashMapVariable map, String line)
+            throws IOException, SjavacException {
         // creates a new map for the current scope
         HashMapVariable currMap = new HashMapVariable(map);
         compileMethodHead(currMap,line,false);
         if(!Scope.compileScope(bufferedReader,currMap, methods)){
-            System.out.println("raise error: this method ended with } without doing return;");
+            throw new SjavacException(SjavacException.METHOD_NO_RETURN_ERR);
         }
 
     }
@@ -44,14 +45,14 @@ public class Method {
      * @throws IOException
      */
     private void compileMethodHead( HashMapVariable currMap, String line, boolean globalRun)
-            throws IOException { // throws InvalidValue / WrongSyntax
+            throws IOException, SjavacException { // throws InvalidValue / WrongSyntax
         String functionName = null;
         Matcher matcher = RegularExpressions.VOID_PATTERN.matcher(line);
         // checking that the void has space from the name
         if (matcher.lookingAt()) {
             line = line.substring(matcher.end());
         } else {
-            System.out.println("raise error: the void does not have space from the name");
+            System.out.println("");
         }
         //check if the name of the function is current
         matcher = RegularExpressions.FUNCTION_NAME_PATTERN.matcher(line);
@@ -99,9 +100,11 @@ public class Method {
      * @param globalRun a boolean to know its it's in the global run or the function run
      * @return String of the line
      */
-    private String checkingMethodArgument(
-            ArrayList<String> functionArguments, String line,
-            HashMapVariable currMap, Boolean finalVariable, boolean globalRun){
+    private String checkingMethodArgument(ArrayList<String> functionArguments,
+                                          String line,
+                                          HashMapVariable currMap,
+                                          Boolean finalVariable,
+                                          boolean globalRun) throws SjavacException{
         // checking if there is a final
         Matcher matcher = RegularExpressions.FINAL_PATTERN.matcher(line);
         if (matcher.lookingAt()){
@@ -115,7 +118,7 @@ public class Method {
         }
         // creating a variable and adding it to the map
         String type = matcher.group(1);
-        Variable variable = VariableFactory.createVariable(type, FALSE);
+        Variable variable = VariableFactory.createVariable(type);
         variable.setFinale(finalVariable);
         variable.setValueTrue();
         functionArguments.add(type);
@@ -131,7 +134,7 @@ public class Method {
      * @throws IOException
      */
     public void SaveAndSkipMethod(BufferedReader bufferedReader, HashMapVariable map, String line)
-            throws IOException {
+            throws IOException, SjavacException {
         compileMethodHead(map,line,true);
         int countBrackets = 1;
         while (countBrackets != 0 && (line = bufferedReader.readLine()) != null) {
@@ -154,7 +157,7 @@ public class Method {
      * @param methods Arraylist that contain the function name and all of its elements
      */
     public static void compileMethodCall(String line, HashMapVariable map,
-                                          HashMap<String, ArrayList<String>> methods){
+                                          HashMap<String, ArrayList<String>> methods) throws SjavacException{
         // checking the function name
         Matcher matcher = RegularExpressions.FUNCTION_NAME_PATTERN.matcher(line);
         if (matcher.lookingAt()){
@@ -164,7 +167,7 @@ public class Method {
                 for (String type : argumentsType) {
                     matcher = RegularExpressions.ARGUMENT_PATTERN.matcher(argumentList);
                     if (matcher.lookingAt()){
-                        Variable testVar = VariableFactory.createVariable(type, false);
+                        Variable testVar = VariableFactory.createVariable(type);
                         testVar.setValue(matcher.group(1), map);
                         argumentList = argumentList.substring(matcher.end());
                     } else {

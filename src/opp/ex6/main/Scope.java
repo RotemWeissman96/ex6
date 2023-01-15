@@ -19,7 +19,7 @@ public class Scope {
      * @throws IOException
      */
     public static boolean compileScope(BufferedReader bufferedReader, HashMapVariable currMap,
-                HashMap<String, ArrayList<String>> methods) throws IOException {
+                HashMap<String, ArrayList<String>> methods) throws IOException, SjavacException {
         String line;
         boolean lastReturn = false;
         while ((line = bufferedReader.readLine()) != null) {
@@ -37,7 +37,7 @@ public class Scope {
                 if (line.startsWith(IF) || line.startsWith(WHILE)) {
                     compileIfWhile(line, bufferedReader, currMap, methods);
                 } else if (HashMapVariable.isLineVariableDeclaration(line)) {
-                    Variable.compileVariableDeclaration(line, false, currMap);
+                    Variable.compileVariableDeclaration(line, currMap);
                 } else {
                     Matcher matcher = RegularExpressions.IS_METHOD_CALL_PATTERN.matcher(line);
                     if (matcher.lookingAt()) { // it's a method call
@@ -62,7 +62,7 @@ public class Scope {
      */
     private static void compileIfWhile(String line, BufferedReader bufferedReader, HashMapVariable map,
                                        HashMap<String, ArrayList<String>> methods)
-            throws IOException { // throws InvalidValue / WrongSyntax
+            throws IOException, SjavacException { // throws InvalidValue / WrongSyntax
         HashMapVariable currMap = new HashMapVariable(map);
         Variable var = null;
         Matcher matcher = WHILE_IF_PATTERN.matcher(line);
@@ -113,7 +113,7 @@ public class Scope {
      * @param line
      * @param map
      */
-    public static void compileAssignment(String line, HashMapVariable map) { // throws InvalidValue / WrongSyntax
+    public static void compileAssignment(String line, HashMapVariable map) throws SjavacException {
         Matcher matcher = VALID_ASSIGNMENT_PATTERN.matcher(line);
         if (matcher.matches()) {
             line = handlingCompileAssignment(line, map);
@@ -138,7 +138,7 @@ public class Scope {
      * @param map
      * @return
      */
-    private static String handlingCompileAssignment(String line, HashMapVariable map){
+    private static String handlingCompileAssignment(String line, HashMapVariable map) throws SjavacException{
         Variable variable = null;
         Matcher matcher = RegularExpressions.VAR_NAME_PATTERN.matcher(line);
         if (matcher.lookingAt()) {

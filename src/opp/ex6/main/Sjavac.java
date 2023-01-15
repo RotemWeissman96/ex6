@@ -1,13 +1,11 @@
 package opp.ex6.main;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import static opp.ex6.main.RegularExpressions.*;
+
 
 //test
 public class Sjavac {
@@ -38,7 +36,7 @@ public class Sjavac {
      * we ran on the file to fin=d all the global arguments
      * @param path the path where the file is currently
      * @param map a hash map to save all the global arguments
-     * @throws IOException
+     * @throws IOException, SjavacException
      */
     private static void globalSearch(String path, HashMapVariable map)
             throws IOException, SjavacException { // throws InvalidValue / WrongSyntax

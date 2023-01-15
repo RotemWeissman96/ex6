@@ -97,9 +97,6 @@ public class Variable {
     }
 
     /**
-     *
-     * @param line
-     * @param map
      * we check the Variable declaration  is correct format
      * @param line the line itself
      * @param map the map we want to save it

@@ -153,7 +153,6 @@ public class Scope {
         }
         matcher = RegularExpressions.ASSIGN_PATTERN.matcher(line);
         if (matcher.lookingAt()) {
-            assert variable != null;
             variable.setValue(matcher.group(1), map);
             line = line.substring(matcher.end());
         } else {

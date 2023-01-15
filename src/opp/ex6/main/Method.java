@@ -22,7 +22,7 @@ public class Method {
      * @param bufferedReader the buffer where will get all the lines from the file
      * @param map the map where we kept all the global arguments
      * @param line the current line in the file
-     * @throws IOException
+     * @throws IOException, SjavacException
      */
     public void compileMethodBody(BufferedReader bufferedReader, HashMapVariable map, String line)
             throws IOException, SjavacException {
@@ -40,7 +40,7 @@ public class Method {
      * @param currMap the map where will keep all the arguments
      * @param line the current line in the file
      * @param globalRun a boolean to know its it's in the global run or the function run
-     * @throws IOException
+     * @throws IOException, SjavacException
      */
     private void compileMethodHead( HashMapVariable currMap, String line, boolean globalRun)
             throws IOException, SjavacException { // throws InvalidValue / WrongSyntax
@@ -146,7 +146,7 @@ public class Method {
      * this function we use in the first time that we ran throw the file we check the compileMethodHead
      * and skip the rest of the function
      * @param bufferedReader the buffer where will get all the lines from the file
-     * @throws IOException
+     * @throws IOException, SjavacException
      */
     public void SaveAndSkipMethod(BufferedReader bufferedReader, HashMapVariable map, String line)
             throws IOException, SjavacException {

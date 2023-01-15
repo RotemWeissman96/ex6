@@ -128,7 +128,7 @@ public class Variable {
             line = line.substring(matcher.end());
         } else {
             if (finalVariable) { // if it's a final variable there must be assignment
-                System.out.println("raise error 1");
+                System.out.println("raise error: cant declare a final with no assignment");
             }
         }
         return line;

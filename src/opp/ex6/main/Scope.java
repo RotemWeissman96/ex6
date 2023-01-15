@@ -15,7 +15,7 @@ public class Scope {
         while ((line = bufferedReader.readLine()) != null) {
             line = line.trim();
             if (line.startsWith("}") && line.substring(1).trim().equals("")){
-                currMap.printMaps();
+//                currMap.printMaps();
                 return lastReturn;
             } else {
                 lastReturn = RegularExpressions.RETURN_LINE_PATTERN.matcher(line).matches();
@@ -30,7 +30,7 @@ public class Scope {
                 } else {
                     Matcher matcher = RegularExpressions.IS_METHOD_CALL_PATTERN.matcher(line);
                     if (matcher.lookingAt()) { // it's a method call
-                        compileMethodCall(line, currMap, methods);
+                        Method.compileMethodCall(line, currMap, methods);
                     } else { // assumes it's an assignment
                         compileAssignment(line, currMap);
                     }
@@ -39,40 +39,6 @@ public class Scope {
         }
         System.out.println("raise error: end of file reached with no end of scope");
         return false;
-    }
-
-    private static void compileMethodCall(String line, HashMapVariable map,
-                                          HashMap<String, ArrayList<String>> methods){
-        Matcher matcher = RegularExpressions.FUNCTION_NAME_PATTERN.matcher(line);
-        if (matcher.lookingAt()){
-
-            String argumentList = line.substring(matcher.end());
-            ArrayList<String> argumentsType = methods.get(matcher.group(1));
-            if (argumentsType != null) {
-                for (String type : argumentsType) {
-                    matcher = RegularExpressions.ARGUMENT_PATTERN.matcher(argumentList);
-                    if (matcher.lookingAt()){
-                        Variable testVar = VariableFactory.createVariable(type, false);
-                        testVar.setValue(matcher.group(1), map);
-                        argumentList = argumentList.substring(matcher.end());
-                    } else {
-                        System.out.println("raise error: this is not a valid argument list: " + line);
-                    }
-                    matcher = RegularExpressions.COMA_PATTERN.matcher(argumentList);
-                    if (matcher.lookingAt()){
-                        argumentList = argumentList.substring(matcher.end());
-                    }
-                }
-                matcher = RegularExpressions.END_METHOD_CALL_PATTERN.matcher(argumentList);
-                if (!matcher.matches()) {
-                    System.out.println("raise error: there are to few arguments or end of line out of order");
-                }
-            } else {
-                System.out.println("raise error: there is no method with that name: " + matcher.group(1));
-            }
-        } else {
-            System.out.println("raise error: this is not a valid function name");
-        }
     }
 
     private static void compileIfWhile(String line, BufferedReader bufferedReader, HashMapVariable map,
@@ -155,5 +121,4 @@ public class Scope {
         }
         return line;
     }
-
 }

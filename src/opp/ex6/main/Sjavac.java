@@ -15,7 +15,7 @@ public class Sjavac {
         try {
             HashMapVariable map = new HashMapVariable();
             globalSearch(args[1], map);
-            map.printMaps();
+            //map.printMaps();
             functionsSearch(args[1], map);
         } catch (IOException e) {
             e.printStackTrace(); // print 2
@@ -29,18 +29,17 @@ public class Sjavac {
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
             while ((line = bufferedReader.readLine()) != null) {
                 line = line.trim();
-                if (line.equals("") || line.contains("//")) { // if line was all comma or an empty line
+                if (line.equals("") || line.startsWith("//")) { // if line was all comma or an empty line
                     continue;
                 }
                 if (line.startsWith("void")) {
                     new Method(methods).SaveAndSkipMethod(bufferedReader, map, line);
                     continue;
                 }
-                if (HashMapVariable.isLineVariableDeclaration(line)) {  // check if its a global declaration
+                if (HashMapVariable.isLineVariableDeclaration(line)) {  // check if it's a global declaration
                     Variable.compileVariableDeclaration(line, true, map);
                     continue;
                 }
-
                 Scope.compileAssignment(line, map);
                 // if it's not a declaration and not a method, assume it's an assign
             }

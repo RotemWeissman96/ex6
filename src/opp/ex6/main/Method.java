@@ -42,11 +42,11 @@ public class Method {
         }
         ArrayList<String> functionArguments = new ArrayList<>();
         boolean finalVariable = false;
-        line = checkingFunctionArgument(functionArguments,line,currMap,finalVariable, globalRun);
+        line = checkingMethodArgument(functionArguments,line,currMap,finalVariable, globalRun);
         matcher = RegularExpressions.NEXT_ARGUMENT_PATTERN.matcher(line);
         while (matcher.lookingAt()) {
             line = line.substring(matcher.end());
-            line = checkingFunctionArgument(functionArguments,line,currMap,finalVariable, globalRun);
+            line = checkingMethodArgument(functionArguments,line,currMap,finalVariable, globalRun);
             matcher = RegularExpressions.NEXT_ARGUMENT_PATTERN.matcher(line);
         }
         if(globalRun){
@@ -58,7 +58,7 @@ public class Method {
         }
     }
 
-    private String checkingFunctionArgument(
+    private String checkingMethodArgument(
             ArrayList<String> functionArguments, String line,
             HashMapVariable currMap, Boolean finalVariable, boolean globalRun){
         Matcher matcher = RegularExpressions.FINAL_PATTERN.matcher(line);
@@ -97,6 +97,40 @@ public class Method {
         }
         if(line == null) {
             System.out.println("raise error: some scope was not closed");
+        }
+    }
+
+    public static void compileMethodCall(String line, HashMapVariable map,
+                                          HashMap<String, ArrayList<String>> methods){
+        Matcher matcher = RegularExpressions.FUNCTION_NAME_PATTERN.matcher(line);
+        if (matcher.lookingAt()){
+
+            String argumentList = line.substring(matcher.end());
+            ArrayList<String> argumentsType = methods.get(matcher.group(1));
+            if (argumentsType != null) {
+                for (String type : argumentsType) {
+                    matcher = RegularExpressions.ARGUMENT_PATTERN.matcher(argumentList);
+                    if (matcher.lookingAt()){
+                        Variable testVar = VariableFactory.createVariable(type, false);
+                        testVar.setValue(matcher.group(1), map);
+                        argumentList = argumentList.substring(matcher.end());
+                    } else {
+                        System.out.println("raise error: this is not a valid argument list: " + line);
+                    }
+                    matcher = RegularExpressions.COMA_PATTERN.matcher(argumentList);
+                    if (matcher.lookingAt()){
+                        argumentList = argumentList.substring(matcher.end());
+                    }
+                }
+                matcher = RegularExpressions.END_METHOD_CALL_PATTERN.matcher(argumentList);
+                if (!matcher.matches()) {
+                    System.out.println("raise error: there are to few arguments or end of line out of order");
+                }
+            } else {
+                System.out.println("raise error: there is no method with that name: " + matcher.group(1));
+            }
+        } else {
+            System.out.println("raise error: this is not a valid function name");
         }
     }
 }

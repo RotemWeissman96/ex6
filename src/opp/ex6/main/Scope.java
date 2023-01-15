@@ -65,37 +65,47 @@ public class Scope {
             throws IOException { // throws InvalidValue / WrongSyntax
         HashMapVariable currMap = new HashMapVariable(map);
         Variable var = null;
-        Matcher matcher = RegularExpressions.WHILE_IF_PATTERN.matcher(line);
-        if(matcher.matches()){
+        Matcher matcher = WHILE_IF_PATTERN.matcher(line);
+        if(matcher.matches()){ // make sure the if/while syntax is correct
             String condition = matcher.group(1);
+            condition = checkValidConditionArgument(condition, map);
             while (!condition.equals("")){
-                condition = condition.trim();
-                matcher = RegularExpressions.ALL_BOOLEAN_PATTERN.matcher(condition);
-                if (matcher.lookingAt()){ // if its a constant valid boolean
-                    condition = condition.substring(matcher.end());
-                } else { // assume it's a variable name
-                    matcher = RegularExpressions.VAR_NAME_PATTERN.matcher(condition);
-                    if (matcher.lookingAt()) {
-                        if ((var = map.getCurrentScope(matcher.group(1))) == null) { // first check local
-                            if ((var = map.getOuterScope(matcher.group(1))) == null) { // then check outer
-                                System.out.println("raise error: this variable does not exist: " + matcher.group(1));
-                                return;
-                            }
-                        }
-                        if (!VariableFactory.BOOLEAN_VALID_TYPES.contains(var.getType()) || !var.getValue()){
-                            //check if the type is boolean friendly and that the var was initiated
-                            System.out.println("raise error: this variable is not a initialized " +
-                                    "boolean: " + matcher.group(1));
-                        }
-                    } else {
-                        System.out.println("raise error: this variable name is not valid: " + condition);
-                    }
-                }
+                condition = checkValidConditionArgument(condition, map);
             }
         } else {
             System.out.println("raise error: wrong if/while syntax: " + line);
         }
         compileScope(bufferedReader, currMap, methods);
+    }
+
+    private static String checkValidConditionArgument(String condition, HashMapVariable map) {
+        Variable var;
+        condition = condition.trim();
+        Matcher matcher = ALL_BOOLEAN_PATTERN.matcher(condition);
+        if (matcher.lookingAt()){ // if it's a constant valid boolean
+            condition = condition.substring(matcher.end());
+        } else { // assume it's a variable name
+            matcher = VAR_NAME_PATTERN.matcher(condition);
+            if (matcher.lookingAt()) {
+                if ((var = map.getCurrentScope(matcher.group(1))) == null) { // first check local
+                    if ((var = map.getOuterScope(matcher.group(1))) == null) { // then check outer
+                        System.out.println("raise error: this variable does not exist: " + matcher.group(1));
+                        return "";
+                    }
+                }
+                if (VariableFactory.BOOLEAN_VALID_TYPES.contains(var.getType()) && var.getValue()){
+                    //check if the type is boolean friendly and that the var was initiated
+                    condition = condition.substring(matcher.end()).trim();
+                } else {
+                    System.out.println("raise error: this variable is not a initialized " +
+                            "boolean: " + matcher.group(1));
+                    return "";
+                }
+            } else {
+                System.out.println("raise error: this variable name is not valid: " + condition);
+            }
+        }
+        return condition;
     }
 
     /**

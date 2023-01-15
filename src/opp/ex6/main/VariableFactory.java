@@ -19,7 +19,6 @@ public class VariableFactory {
     /**
      * creates a variable
      * @param type the type of the variable
-     * @param global boolean if It's global or not
      * @return the Variable
      */
     public static Variable createVariable(String type){

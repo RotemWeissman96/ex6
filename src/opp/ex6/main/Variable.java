@@ -52,7 +52,6 @@ public class Variable {
      * @param map the map we want to save it
      */
     public void setValue(String value, HashMapVariable map) throws SjavacException{
-        //TODO: analyze the value string, throw exception if its not legal
         if (this.finalVariable){ // cant assign values to final variables
             throw new SjavacException(SjavacException.ASSIGN_TO_FINAL_ERR);
         }

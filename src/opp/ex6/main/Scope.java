@@ -16,7 +16,6 @@ public class Scope {
      * @param currMap the map where will keep all the arguments
      * @param methods Arraylist that contain the function name and all of its arguments
      * @return true or false
-     * @throws IOException
      */
     public static boolean compileScope(BufferedReader bufferedReader, HashMapVariable currMap,
                 HashMap<String, ArrayList<String>> methods) throws IOException, SjavacException {
@@ -55,11 +54,11 @@ public class Scope {
     }
 
     /**
-     *
-     * @param line
-     * @param bufferedReader
-     * @param map
-     * @param methods
+     * checks "if" it and "while conditions
+     * @param line the current line in the file
+     * @param bufferedReader the buffer where will get all the lines from the file
+     * @param map the map where we kept all the arguments
+     * @param methods Arraylist that contain the function name and all of its elements
      * @throws IOException
      */
     private static void compileIfWhile(String line, BufferedReader bufferedReader, HashMapVariable map,
@@ -75,13 +74,19 @@ public class Scope {
                 condition = checkValidConditionArgument(condition, map);
             }
         } else {
-            throw new SjavacException(SjavacException.IF_WHILE_SYNTAX_ERR + line);
+            System.out.println("raise error: wrong if/while syntax: " + line);
         }
         compileScope(bufferedReader, currMap, methods);
     }
 
+    /**
+     * checks the valid condition
+     * @param condition the condition that will check
+     * @param map the map where we kept all the arguments
+     * @return the condition
+     */
     private static String checkValidConditionArgument(String condition, HashMapVariable map)
-            throws SjavacException{
+            throws SjavacException {
         Variable var;
         condition = condition.trim();
         Matcher matcher = ALL_BOOLEAN_PATTERN.matcher(condition);

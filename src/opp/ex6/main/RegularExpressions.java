@@ -29,8 +29,8 @@ public class RegularExpressions {
                                 COMA = ",",
                                 OPEN_BRACKETS = "\\(",
                                 CLOSE_BRACKETS = "\\)",
-                                OPEN_CURLY_BRACKETS = "\\{",
-                                CLOSE_CURLY_BRACKETS = "\\}";
+                                OPEN_CURLY_BRACKETS_REGEX = "\\{";
+
 
     public static final String ASSIGNMENT_VALUE =
             "("+IS_CHAR + "|" + IS_STRING + "|" + "(?:[\\w_\\.\\+-]+))";
@@ -44,7 +44,7 @@ public class RegularExpressions {
 
     public static final String SPACED_COMA_REGEX = POSSIBLE_SPACE + COMA + POSSIBLE_SPACE;
     public static final String ENDING_HEAD_FUN_REGEX =
-            POSSIBLE_SPACE + CLOSE_BRACKETS + POSSIBLE_SPACE + OPEN_CURLY_BRACKETS + POSSIBLE_SPACE;
+            POSSIBLE_SPACE + CLOSE_BRACKETS + POSSIBLE_SPACE + OPEN_CURLY_BRACKETS_REGEX + POSSIBLE_SPACE;
     public static final String ENDING_METHOD_CALL =
             POSSIBLE_SPACE + CLOSE_BRACKETS + POSSIBLE_SPACE + COLON + POSSIBLE_SPACE;
     public static final String CONDITION_REGEX =
@@ -52,7 +52,7 @@ public class RegularExpressions {
                     "(?:"+POSSIBLE_SPACE+AND_OR+POSSIBLE_SPACE+BOOLEAN_VAR_REGEX+")*"+POSSIBLE_SPACE+")";
     public static final String WHILE_IF_REGEX =
             POSSIBLE_SPACE+"(?:"+IF+"|"+WHILE+")"+POSSIBLE_SPACE+"\\("+ CONDITION_REGEX + "\\)" +
-                    POSSIBLE_SPACE + OPEN_CURLY_BRACKETS + POSSIBLE_SPACE;
+                    POSSIBLE_SPACE + OPEN_CURLY_BRACKETS_REGEX + POSSIBLE_SPACE;
     public static final String RETURN_LINE_REGEX =
             POSSIBLE_SPACE + RETURN + POSSIBLE_SPACE + COLON + POSSIBLE_SPACE;
     public static final String METHOD_ARGUMENTS_REGEX =

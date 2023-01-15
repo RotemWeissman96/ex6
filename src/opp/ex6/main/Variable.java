@@ -15,6 +15,7 @@ public class Variable {
     /**
      * this is the constructor for the variable
      * @param type the type of the argument
+
      * @param typesPatterns the list of all the type arguments pattern
      * @param allowedTypesAssignment  the list of all the type arguments string names
      */
@@ -36,6 +37,7 @@ public class Variable {
         return type;
     }
 
+
     /**
      * get the value of the Variable
      * @return boolean true or false value
@@ -45,9 +47,9 @@ public class Variable {
     }
 
     /**
-     * this function sets the value of the argument
-     * @param value
-     * @param map
+     * this function sets the value of the Variable
+     * @param value the value the Variable
+     * @param map the map we want to save it
      */
     public void setValue(String value, HashMapVariable map) throws SjavacException{
         //TODO: analyze the value string, throw exception if its not legal
@@ -86,8 +88,9 @@ public class Variable {
         }
     }
 
+
     /**
-     *
+     *  set the value of the Variable to true
      */
     public void setValueTrue(){
         this.value = true;
@@ -97,6 +100,9 @@ public class Variable {
      *
      * @param line
      * @param map
+     * we check the Variable declaration  is correct format
+     * @param line the line itself
+     * @param map the map we want to save it
      */
     public static void compileVariableDeclaration(String line, HashMapVariable map)
         throws SjavacException{
@@ -160,7 +166,7 @@ public class Variable {
     }
 
     /**
-     *
+     * set the final Variable
      * @param finalVariable
      */
     public void setFinale(boolean finalVariable) {

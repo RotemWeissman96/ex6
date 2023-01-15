@@ -47,6 +47,8 @@ public class Method {
     private void compileMethodHead( HashMapVariable currMap, String line, boolean globalRun)
             throws IOException, SjavacException { // throws InvalidValue / WrongSyntax
         String functionName = null;
+        // create a ArrayList saving all the local arguments of this function
+        ArrayList<String> functionArguments = new ArrayList<>();
         Matcher matcher = RegularExpressions.VOID_PATTERN.matcher(line);
         // checking that the void has space from the name
         if (matcher.lookingAt()) {
@@ -68,18 +70,8 @@ public class Method {
         if(matcher.matches()){
             return;
         }
-        // create a ArrayList saving all the local arguments of this function
-        ArrayList<String> functionArguments = new ArrayList<>();
-        boolean finalVariable = false;
+        line = getElementsCallingFunction(line, functionArguments, currMap, globalRun);
 
-        line = checkingMethodArgument(functionArguments,line,currMap,finalVariable, globalRun);
-        matcher = RegularExpressions.NEXT_ARGUMENT_PATTERN.matcher(line);
-        // running a loop getting all the arguments of the function
-        while (matcher.lookingAt()) {
-            line = line.substring(matcher.end());
-            line = checkingMethodArgument(functionArguments,line,currMap,finalVariable, globalRun);
-            matcher = RegularExpressions.NEXT_ARGUMENT_PATTERN.matcher(line);
-        }
         // if it's the global run we want to keep it in the methods map
         if(globalRun){
             methods.put(functionName,functionArguments);
@@ -92,6 +84,29 @@ public class Method {
     }
 
     /**
+     * getting all the elements when we first call the function
+     * @param line the current line in the file
+     * @param functionArguments a ArrayList saving all the local arguments
+     * @param currMap the map where will keep all the arguments
+     * @param globalRun  a boolean to know its it's in the global run or the function run
+     * @return the line
+     */
+    private static String getElementsCallingFunction(String line,ArrayList<String> functionArguments,
+                                                   HashMapVariable currMap, Boolean globalRun)
+                                                    throws IOException, SjavacException{
+        boolean finalVariable = false;
+        line = checkingMethodArgument(functionArguments,line,currMap,finalVariable, globalRun);
+        Matcher matcher = RegularExpressions.NEXT_ARGUMENT_PATTERN.matcher(line);
+        // running a loop getting all the arguments of the function
+        while (matcher.lookingAt()) {
+            line = line.substring(matcher.end());
+            line = checkingMethodArgument(functionArguments,line,currMap,finalVariable, globalRun);
+            matcher = RegularExpressions.NEXT_ARGUMENT_PATTERN.matcher(line);
+        }
+        return line;
+    }
+
+    /**
      *
      * @param functionArguments a ArrayList saving all the local arguments
      * @param line the current line in the file
@@ -100,7 +115,7 @@ public class Method {
      * @param globalRun a boolean to know its it's in the global run or the function run
      * @return String of the line
      */
-    private String checkingMethodArgument(ArrayList<String> functionArguments,
+    private static String checkingMethodArgument(ArrayList<String> functionArguments,
                                           String line,
                                           HashMapVariable currMap,
                                           Boolean finalVariable,
@@ -123,7 +138,6 @@ public class Method {
         variable.setValueTrue();
         functionArguments.add(type);
         line = line.substring(matcher.end());
-        line = currMap.validatingName(line, variable, globalRun);
         return currMap.validatingName(line, variable, globalRun);
     }
 

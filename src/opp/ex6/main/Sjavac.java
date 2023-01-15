@@ -67,7 +67,7 @@ public class Sjavac {
     }
 
     /**
-     *  this is the second run where we go throw the the function itself
+     * this is the second run where we go throw the function itself
      * @param path the path where the file is currently
      * @param map a hash map to save all the global arguments
      */

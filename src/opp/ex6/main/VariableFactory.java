@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import static opp.ex6.main.RegularExpressions.*;
 
 public class VariableFactory {
+    //these are array list of all the types weh have
     private static final ArrayList<String> INT_VALID_TYPES = new ArrayList<>(List.of(INT));
     private static final ArrayList<String> DOUBLE_VALID_TYPES = new ArrayList<>(List.of(DOUBLE, INT));
     private static final ArrayList<String> CHAR_VALID_TYPES =  new ArrayList<>(List.of(CHAR));
@@ -16,9 +17,10 @@ public class VariableFactory {
 
 
     /**
-     *
-     * @param type
-     * @return
+     * creates a variable
+     * @param type the type of the variable
+     * @param global boolean if It's global or not
+     * @return the Variable
      */
     public static Variable createVariable(String type){
         ArrayList<String> validTypes = validTypeAssignment(type);
@@ -30,10 +32,11 @@ public class VariableFactory {
         return new Variable(type, regexExpressions, validTypes);
     }
 
+
     /**
-     *
-     * @param type
-     * @return
+     * getting the pattern for each type
+     * @param type the type of the Variable
+     * @return a pattern suited for type
      */
     private static Pattern typeRegex(String type){
         switch (type){
@@ -52,9 +55,9 @@ public class VariableFactory {
     }
 
     /**
-     *
-     * @param type
-     * @return
+     *  a list of all the types that can work for this type
+     * @param type the type of the Variable
+     * @return a list of strings that fit this type
      */
     private static ArrayList<String> validTypeAssignment(String type){
         switch (type){

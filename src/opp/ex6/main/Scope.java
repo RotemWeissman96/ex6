@@ -11,11 +11,11 @@ import static opp.ex6.main.RegularExpressions.*;
 public class Scope {
 
     /**
-     *
-     * @param bufferedReader
-     * @param currMap
-     * @param methods
-     * @return
+     * this is where we compile the scope of the function
+     * @param bufferedReader the buffer where will get all the lines from the file
+     * @param currMap the map where will keep all the arguments
+     * @param methods Arraylist that contain the function name and all of its arguments
+     * @return true or false
      * @throws IOException
      */
     public static boolean compileScope(BufferedReader bufferedReader, HashMapVariable currMap,
@@ -23,17 +23,19 @@ public class Scope {
         String line;
         boolean lastReturn = false;
         while ((line = bufferedReader.readLine()) != null) {
+            //it's "//" we skip over it
             if (line.startsWith("//")){continue;}
             line = line.trim();
             if (line.equals("")) {continue;}
-            if (line.startsWith("}") && line.substring(1).trim().equals("")){
+            if (line.startsWith(CLOSE_CURLY_BRACKETS) && line.substring(1).trim().equals("")){
                 return lastReturn;
             } else {
+                // if it's the return value
                 lastReturn = RegularExpressions.RETURN_LINE_PATTERN.matcher(line).matches();
                 if (lastReturn) {
-                    // check if
                     continue;
                 }
+                // checks it contains "if" or "while"
                 if (line.startsWith(IF) || line.startsWith(WHILE)) {
                     compileIfWhile(line, bufferedReader, currMap, methods);
                 } else if (HashMapVariable.isLineVariableDeclaration(line)) {

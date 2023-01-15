@@ -16,6 +16,7 @@ public class SjavacException extends Exception{
     public static final String METHOD_NO_RETURN_ERR = "raise error: this method ended with } without doing " +
             "return;";
     public static final String VOID_SPACING_ERR = "raise error: the void does not have space from the name";
+    public static final String INVALID_FUNCTION_NAME_ERR = "raise error: the function name was invalid: ";
     public SjavacException(String message) {
         super(message);
     }

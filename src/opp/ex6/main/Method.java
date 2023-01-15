@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 
-import static java.lang.Boolean.FALSE;
-
 public class Method {
     private final HashMap<String, ArrayList<String>> methods;
 
@@ -54,7 +52,7 @@ public class Method {
         if (matcher.lookingAt()) {
             line = line.substring(matcher.end());
         } else {
-            System.out.println("");
+            throw new SjavacException(SjavacException.VOID_SPACING_ERR);
         }
         //check if the name of the function is current
         matcher = RegularExpressions.FUNCTION_NAME_PATTERN.matcher(line);
@@ -62,22 +60,25 @@ public class Method {
             functionName =  matcher.group(1);
             line = line.substring(matcher.end());
         } else {
-            System.out.println("raise error: the function name was not correct");
+            throw new SjavacException(SjavacException.INVALID_FUNCTION_NAME_ERR + line);
         }
 
         // if the function is without arguments at all
-        matcher = RegularExpressions.ENDING_SCOPE_PATTERN.matcher(line);
+        matcher = RegularExpressions.ENDING_HEAD_FUN_PATTERN.matcher(line);
         if(matcher.matches()){
+            if(globalRun){
+                methods.put(functionName,functionArguments);
+            }
             return;
         }
-        line = getElementsCallingFunction(line, functionArguments, currMap, globalRun);
+        line = saveArgumentCallingFunction(line, functionArguments, currMap, globalRun);
 
         // if it's the global run we want to keep it in the methods map
         if(globalRun){
             methods.put(functionName,functionArguments);
         }
         // checking for the end with a "{"
-        matcher = RegularExpressions.ENDING_SCOPE_PATTERN.matcher(line);
+        matcher = RegularExpressions.ENDING_HEAD_FUN_PATTERN.matcher(line);
         if(!matcher.matches()){
             System.out.println("the function dos not end well");
         }
@@ -91,8 +92,8 @@ public class Method {
      * @param globalRun  a boolean to know its it's in the global run or the function run
      * @return the line
      */
-    private static String getElementsCallingFunction(String line,ArrayList<String> functionArguments,
-                                                   HashMapVariable currMap, Boolean globalRun)
+    private static String saveArgumentCallingFunction(String line, ArrayList<String> functionArguments,
+                                                      HashMapVariable currMap, Boolean globalRun)
                                                     throws IOException, SjavacException{
         boolean finalVariable = false;
         line = checkingMethodArgument(functionArguments,line,currMap,finalVariable, globalRun);

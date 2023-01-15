@@ -43,7 +43,7 @@ public class RegularExpressions {
     public static final String AND_OR = "(?:(?:\\|\\|)|(?:&&))";
 
     public static final String SPACED_COMA_REGEX = POSSIBLE_SPACE + COMA + POSSIBLE_SPACE;
-    public static final String ENDING_SCOPE_REGEX =
+    public static final String ENDING_HEAD_FUN_REGEX =
             POSSIBLE_SPACE + CLOSE_BRACKETS + POSSIBLE_SPACE + OPEN_CURLY_BRACKETS + POSSIBLE_SPACE;
     public static final String ENDING_METHOD_CALL =
             POSSIBLE_SPACE + CLOSE_BRACKETS + POSSIBLE_SPACE + COLON + POSSIBLE_SPACE;
@@ -82,7 +82,7 @@ public class RegularExpressions {
     public static Pattern WHILE_IF_PATTERN = Pattern.compile(WHILE_IF_REGEX);
     public static Pattern ALL_BOOLEAN_PATTERN = Pattern.compile(ALL_BOOLEAN_REGEX);
     public static Pattern NEXT_ARGUMENT_PATTERN = Pattern.compile(SPACED_COMA_REGEX);
-    public static Pattern ENDING_SCOPE_PATTERN = Pattern.compile(ENDING_SCOPE_REGEX);
+    public static Pattern ENDING_HEAD_FUN_PATTERN = Pattern.compile(ENDING_HEAD_FUN_REGEX);
     public static Pattern RETURN_LINE_PATTERN = Pattern.compile(RETURN_LINE_REGEX);
     public static Pattern ARGUMENT_PATTERN = Pattern.compile(POSSIBLE_SPACE + ASSIGNMENT_VALUE);
     public static Pattern END_METHOD_CALL_PATTERN = Pattern.compile(ENDING_METHOD_CALL);

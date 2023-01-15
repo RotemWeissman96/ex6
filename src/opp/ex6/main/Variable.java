@@ -9,15 +9,16 @@ public class Variable {
     private final boolean global;
     private boolean finalVariable;
     private boolean value;
-    private Pattern[] typesPatterns; // it's a list, so we can support double to be assigned with int and double
-    private ArrayList<String> allowedTypesAssignment;
+    // it's a list, so we can support double to be assigned with int and double
+    private final Pattern[] typesPatterns;
+    private final ArrayList<String> allowedTypesAssignment;
 
     /**
-     *
-     * @param type
-     * @param global
-     * @param typesPatterns
-     * @param allowedTypesAssignment
+     * this is the constructor for the variable
+     * @param type the type of the argument
+     * @param global if its a global argument
+     * @param typesPatterns the list of all the type arguments pattern
+     * @param allowedTypesAssignment  the list of all the type arguments string names
      */
     public Variable(String type, boolean global,  Pattern[] typesPatterns,
                     ArrayList<String> allowedTypesAssignment) {
@@ -30,31 +31,31 @@ public class Variable {
     }
 
     /**
-     *
-     * @return
+     * get the type of the Variable
+     * @return string type
      */
     public String getType() {
         return type;
     }
 
-    /**
-     *
-     * @return
-     */
-    public boolean getGlobal(){
-        return global;
-    }
+//    /**
+//     *
+//     * @return
+//     */
+//    public boolean getGlobal(){
+//        return global;
+//    }
 
     /**
-     *
-     * @return
+     * get the value of the Variable
+     * @return boolean true or false value
      */
     public boolean getValue(){
         return value;
     }
 
     /**
-     *
+     * this function sets the value of the argument
      * @param value
      * @param map
      */

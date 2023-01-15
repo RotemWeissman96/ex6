@@ -61,9 +61,16 @@ public class Method {
         } else {
             System.out.println("raise error: the function name was not correct");
         }
+
+        // if the function is without arguments at all
+        matcher = RegularExpressions.ENDING_SCOPE_PATTERN.matcher(line);
+        if(matcher.matches()){
+            return;
+        }
         // create a ArrayList saving all the local arguments of this function
         ArrayList<String> functionArguments = new ArrayList<>();
         boolean finalVariable = false;
+
         line = checkingMethodArgument(functionArguments,line,currMap,finalVariable, globalRun);
         matcher = RegularExpressions.NEXT_ARGUMENT_PATTERN.matcher(line);
         // running a loop getting all the arguments of the function
@@ -113,6 +120,7 @@ public class Method {
         variable.setValueTrue();
         functionArguments.add(type);
         line = line.substring(matcher.end());
+        line = currMap.validatingName(line, variable, globalRun);
         return currMap.validatingName(line, variable, globalRun);
     }
 

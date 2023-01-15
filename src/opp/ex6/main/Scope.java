@@ -10,6 +10,14 @@ import static opp.ex6.main.RegularExpressions.*;
 
 public class Scope {
 
+    /**
+     *
+     * @param bufferedReader
+     * @param currMap
+     * @param methods
+     * @return
+     * @throws IOException
+     */
     public static boolean compileScope(BufferedReader bufferedReader, HashMapVariable currMap,
                 HashMap<String, ArrayList<String>> methods) throws IOException {
         String line;
@@ -26,7 +34,7 @@ public class Scope {
                     // check if
                     continue;
                 }
-                if (line.startsWith("if") || line.startsWith("while")) {
+                if (line.startsWith(IF) || line.startsWith(WHILE)) {
                     compileIfWhile(line, bufferedReader, currMap, methods);
                 } else if (HashMapVariable.isLineVariableDeclaration(line)) {
                     Variable.compileVariableDeclaration(line, false, currMap);
@@ -44,6 +52,14 @@ public class Scope {
         return false;
     }
 
+    /**
+     *
+     * @param line
+     * @param bufferedReader
+     * @param map
+     * @param methods
+     * @throws IOException
+     */
     private static void compileIfWhile(String line, BufferedReader bufferedReader, HashMapVariable map,
                                        HashMap<String, ArrayList<String>> methods)
             throws IOException { // throws InvalidValue / WrongSyntax
@@ -106,6 +122,12 @@ public class Scope {
         }
     }
 
+    /**
+     *
+     * @param line
+     * @param map
+     * @return
+     */
     private static String handlingCompileAssignment(String line, HashMapVariable map){
         Variable variable = null;
         Matcher matcher = RegularExpressions.VAR_NAME_PATTERN.matcher(line);

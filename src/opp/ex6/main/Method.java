@@ -6,14 +6,28 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 
+import static java.lang.Boolean.FALSE;
+
 public class Method {
     private final HashMap<String, ArrayList<String>> methods;
 
+    /**
+     * the constructor for Method
+     * @param methods Arraylist that contain the function name and all of its elements
+     */
     public Method(HashMap<String, ArrayList<String>> methods){
         this.methods = methods;
     }
 
+    /**
+     * this function will run throw the whole file void function
+     * @param bufferedReader the buffer where will get all the lines from the file
+     * @param map the map where we kept all the global arguments
+     * @param line the current line in the file
+     * @throws IOException
+     */
     public void compileMethodBody(BufferedReader bufferedReader, HashMapVariable map, String line) throws IOException {
+        // creates a new map for the current scope
         HashMapVariable currMap = new HashMapVariable(map);
         compileMethodHead(currMap,line,false);
         if(!Scope.compileScope(bufferedReader,currMap, methods)){
@@ -22,6 +36,13 @@ public class Method {
 
     }
 
+    /**
+     *
+     * @param currMap the map where will keep all the arguments
+     * @param line the current line in the file
+     * @param globalRun a boolean to know its it's in the global run or the function run
+     * @throws IOException
+     */
     private void compileMethodHead( HashMapVariable currMap, String line, boolean globalRun)
             throws IOException { // throws InvalidValue / WrongSyntax
         String functionName = null;
@@ -32,7 +53,7 @@ public class Method {
         } else {
             System.out.println("raise error: the void does not have space from the name");
         }
-        //check  if the name is like is supposed to be
+        //check if the name of the function is current
         matcher = RegularExpressions.FUNCTION_NAME_PATTERN.matcher(line);
         if (matcher.lookingAt()) {
             functionName =  matcher.group(1);
@@ -40,38 +61,54 @@ public class Method {
         } else {
             System.out.println("raise error: the function name was not correct");
         }
+        // create a ArrayList saving all the local arguments of this function
         ArrayList<String> functionArguments = new ArrayList<>();
         boolean finalVariable = false;
         line = checkingMethodArgument(functionArguments,line,currMap,finalVariable, globalRun);
         matcher = RegularExpressions.NEXT_ARGUMENT_PATTERN.matcher(line);
+        // running a loop getting all the arguments of the function
         while (matcher.lookingAt()) {
             line = line.substring(matcher.end());
             line = checkingMethodArgument(functionArguments,line,currMap,finalVariable, globalRun);
             matcher = RegularExpressions.NEXT_ARGUMENT_PATTERN.matcher(line);
         }
+        // if it's the global run we want to keep it in the methods map
         if(globalRun){
             methods.put(functionName,functionArguments);
         }
+        // checking for the end with a "{"
         matcher = RegularExpressions.ENDING_SCOPE_PATTERN.matcher(line);
         if(!matcher.matches()){
             System.out.println("the function dos not end well");
         }
     }
 
+    /**
+     *
+     * @param functionArguments a ArrayList saving all the local arguments
+     * @param line the current line in the file
+     * @param currMap the map where will keep all the arguments
+     * @param finalVariable a boolean to know if the argument is final
+     * @param globalRun a boolean to know its it's in the global run or the function run
+     * @return String of the line
+     */
     private String checkingMethodArgument(
             ArrayList<String> functionArguments, String line,
             HashMapVariable currMap, Boolean finalVariable, boolean globalRun){
+        // checking if there is a final
         Matcher matcher = RegularExpressions.FINAL_PATTERN.matcher(line);
         if (matcher.lookingAt()){
             finalVariable = true;
             line = line.substring(matcher.end());
         }
+        // checking the type of the argument
         matcher = RegularExpressions.TYPE_PATTERN.matcher(line);
         if(!matcher.lookingAt()) {
             System.out.println("raise error: that variable type does not exist");
         }
+        // creating a variable and adding it to the map
         String type = matcher.group(1);
-        Variable variable = VariableFactory.createVariable(type, false);
+        Variable variable = VariableFactory.createVariable(type, FALSE);
         variable.setFinale(finalVariable);
         variable.setValueTrue();
         functionArguments.add(type);
@@ -80,8 +117,9 @@ public class Method {
     }
 
     /**
-     *
-     * @param bufferedReader
+     * this function we use in the first time that we ran throw the file we check the compileMethodHead
+     * and skip the rest of the function
+     * @param bufferedReader the buffer where will get all the lines from the file
      * @throws IOException
      */
     public void SaveAndSkipMethod(BufferedReader bufferedReader, HashMapVariable map, String line)
@@ -101,11 +139,17 @@ public class Method {
         }
     }
 
+    /**
+     * this function wwe call a function within a void and check that is currect
+     * @param line the current line in the file
+     * @param map the map where we kept all the global arguments
+     * @param methods Arraylist that contain the function name and all of its elements
+     */
     public static void compileMethodCall(String line, HashMapVariable map,
                                           HashMap<String, ArrayList<String>> methods){
+        // checking the function name
         Matcher matcher = RegularExpressions.FUNCTION_NAME_PATTERN.matcher(line);
         if (matcher.lookingAt()){
-
             String argumentList = line.substring(matcher.end());
             ArrayList<String> argumentsType = methods.get(matcher.group(1));
             if (argumentsType != null) {

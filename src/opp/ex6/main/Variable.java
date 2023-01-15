@@ -9,9 +9,16 @@ public class Variable {
     private final boolean global;
     private boolean finalVariable;
     private boolean value;
-    private Pattern[] typesPatterns; // its a list so we can support double to be assigned with int and double
+    private Pattern[] typesPatterns; // it's a list, so we can support double to be assigned with int and double
     private ArrayList<String> allowedTypesAssignment;
 
+    /**
+     *
+     * @param type
+     * @param global
+     * @param typesPatterns
+     * @param allowedTypesAssignment
+     */
     public Variable(String type, boolean global,  Pattern[] typesPatterns,
                     ArrayList<String> allowedTypesAssignment) {
         this.type = type;
@@ -22,18 +29,35 @@ public class Variable {
         this.value = false;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getGlobal(){
         return global;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getValue(){
         return value;
     }
 
+    /**
+     *
+     * @param value
+     * @param map
+     */
     public void setValue(String value, HashMapVariable map) {
         // throws invalidValueException or VariableDoesNotExist (for variable assignment)
         //TODO: analyze the value string, throw exception if its not legal
@@ -74,10 +98,19 @@ public class Variable {
         }
     }
 
+    /**
+     *
+     */
     public void setValueTrue(){
         this.value = true;
     }
 
+    /**
+     *
+     * @param line
+     * @param global
+     * @param map
+     */
     public static void compileVariableDeclaration(String line, boolean global, HashMapVariable map) {
         String type = null;
         boolean finalVariable = false;
@@ -138,6 +171,10 @@ public class Variable {
         return line;
     }
 
+    /**
+     *
+     * @param finalVariable
+     */
     public void setFinale(boolean finalVariable) {
         if (this.finalVariable){
             return;

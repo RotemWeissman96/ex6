@@ -12,17 +12,30 @@ import static opp.ex6.main.RegularExpressions.*;
 public class Sjavac {
     private static final HashMap<String, ArrayList<String>> methods = new HashMap<>();
 
+    /***
+     * the main we run through the file we got and checking that is compile for sjavac
+     * @param args the args that we get in the command line in this case it will be the file will check
+     */
     public static void main(String[] args) {
         try {
             HashMapVariable map = new HashMapVariable();
+            // we run first time on the file to get all the global argument and to know all the functions
+            // we have
             globalSearch(args[1], map);
             //map.printMaps();
+            // the second time we run throw the file we also go to the function search
             functionsSearch(args[1], map);
         } catch (IOException e) {
             e.printStackTrace(); // print 2
         } //TODO: catch InvalidValue / WrongSyntax
     }
 
+    /**
+     * we ran on the file to fin=d all the global arguments
+     * @param path the path where the file is currently
+     * @param map a hash map to save all the global arguments
+     * @throws IOException
+     */
     private static void globalSearch(String path, HashMapVariable map)
             throws IOException { // throws InvalidValue / WrongSyntax
         String line;
@@ -30,12 +43,14 @@ public class Sjavac {
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
             while ((line = bufferedReader.readLine()) != null) {
                 if (line.startsWith("//")) {continue;}
+                // trim the line in order to get the first argument without the spaces
                 line = line.trim();
                 if (line.equals("")) {continue;}
                 if (line.startsWith("void")) {
                     new Method(methods).SaveAndSkipMethod(bufferedReader, map, line);
                     continue;
                 }
+                // checks if it what of global types
                 if (HashMapVariable.isLineVariableDeclaration(line)) {  // check if it's a global declaration
                     Variable.compileVariableDeclaration(line, true, map);
                     continue;
@@ -48,6 +63,11 @@ public class Sjavac {
         }
     }
 
+    /**
+     *  this is the second run where we go throw the the function itself
+     * @param path the path where the file is currently
+     * @param map a hash map to save all the global arguments
+     */
     private static void functionsSearch(String path, HashMapVariable map) {  // throws InvalidValue / WrongSyntax
         String line;
         try (FileReader fileReader = new FileReader(path);

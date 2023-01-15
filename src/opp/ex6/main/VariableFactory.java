@@ -4,14 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class VariableFactory {
-    private static final ArrayList<String> INT_VALID_TYPES = new ArrayList<>(List.of("int"));
-    private static final ArrayList<String> DOUBLE_VALID_TYPES = new ArrayList<>(List.of("double", "int"));
-    private static final ArrayList<String> CHAR_VALID_TYPES =  new ArrayList<>(List.of("char"));
-    private static final ArrayList<String> STRING_VALID_TYPES =  new ArrayList<>(List.of("String"));
-    public static final ArrayList<String> BOOLEAN_VALID_TYPES =  new ArrayList<>(List.of("boolean",
-            "double", "int"));
+import static opp.ex6.main.RegularExpressions.*;
 
+public class VariableFactory {
+    private static final ArrayList<String> INT_VALID_TYPES = new ArrayList<>(List.of(INT));
+    private static final ArrayList<String> DOUBLE_VALID_TYPES = new ArrayList<>(List.of(DOUBLE, INT));
+    private static final ArrayList<String> CHAR_VALID_TYPES =  new ArrayList<>(List.of(CHAR));
+    private static final ArrayList<String> STRING_VALID_TYPES =  new ArrayList<>(List.of(STRING));
+    public static final ArrayList<String> BOOLEAN_VALID_TYPES =  new ArrayList<>(List.of(BOOLEAN,
+            DOUBLE, INT));
+
+
+    /**
+     *
+     * @param type
+     * @param global
+     * @return
+     */
     public static Variable createVariable(String type, boolean global){
         ArrayList<String> validTypes = validTypeAssignment(type);
         assert (validTypes != null);
@@ -22,34 +31,44 @@ public class VariableFactory {
         return new Variable(type, global, regexExpressions, validTypes);
     }
 
+    /**
+     *
+     * @param type
+     * @return
+     */
     private static Pattern typeRegex(String type){
         switch (type){
-            case "int":
+            case INT:
                 return RegularExpressions.INT_PATTERN;
-            case "double":
+            case DOUBLE:
                 return RegularExpressions.DOUBLE_PATTERN;
-            case "char":
+            case CHAR:
                 return RegularExpressions.CHAR_PATTERN;
-            case "String":
+            case STRING:
                 return RegularExpressions.STRING_PATTERN;
-            case "boolean":
+            case BOOLEAN:
                 return RegularExpressions.BOOLEAN_PATTERN;
         }
         return null;
     }
 
+    /**
+     *
+     * @param type
+     * @return
+     */
     private static ArrayList<String> validTypeAssignment(String type){
         switch (type){
-            case "int":
+            case INT:
                 return INT_VALID_TYPES;
-            case "double":
+            case DOUBLE:
                 return DOUBLE_VALID_TYPES;
-            case "char":
+            case CHAR:
                 return CHAR_VALID_TYPES;
-            case "String":
+            case STRING:
                 return STRING_VALID_TYPES;
-            case "boolean":
-            return BOOLEAN_VALID_TYPES;
+            case BOOLEAN:
+                return BOOLEAN_VALID_TYPES;
         }
         return null;
     }

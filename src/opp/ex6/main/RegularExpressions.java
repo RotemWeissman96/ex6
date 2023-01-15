@@ -4,6 +4,11 @@ import java.util.regex.Pattern;
 
 public class RegularExpressions {
     public static final String TYPE = "(int|double|String|char|boolean)";
+    public static final String INT = "int",
+                                DOUBLE = "double",
+                                STRING = "String",
+                                CHAR = "chat",
+                                BOOLEAN = "boolean";
     public static final String  VOID = "void",
                                 FINAL = "final",
                                 IF = "if",

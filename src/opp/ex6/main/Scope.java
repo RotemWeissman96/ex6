@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 
+import static opp.ex6.main.RegularExpressions.*;
+
 public class Scope {
 
     public static boolean compileScope(BufferedReader bufferedReader, HashMapVariable currMap,
@@ -86,11 +88,13 @@ public class Scope {
      */
     public static void compileAssignment(String line, HashMapVariable map) { // throws InvalidValue / WrongSyntax
         line = handlingCompileAssignment(line, map);
-        Matcher matcher = RegularExpressions.COMA_PATTERN.matcher(line);
+        Matcher matcher = COMA_PATTERN.matcher(line);
+        //TODO: check if line fits an assignment
+
         while (matcher.lookingAt()){
             line = line.substring(matcher.end());
             line = handlingCompileAssignment(line, map);
-            matcher = RegularExpressions.COMA_PATTERN.matcher(line);
+            matcher = COMA_PATTERN.matcher(line);
         }
         matcher = RegularExpressions.COLON_PATTERN.matcher(line);
         if (!matcher.lookingAt()) {  // end of line must be ;

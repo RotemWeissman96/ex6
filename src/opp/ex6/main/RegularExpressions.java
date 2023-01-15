@@ -84,4 +84,5 @@ public class RegularExpressions {
     public static Pattern END_METHOD_CALL_PATTERN = Pattern.compile(ENDING_METHOD_CALL);
     public static Pattern IS_METHOD_CALL_PATTERN = Pattern.compile(
             POSSIBLE_SPACE + FUNCTION_NAME_REGEX + POSSIBLE_SPACE + "\\(");
+    public static Pattern ASSINGMENT_LINE_PATTERN = Pattern.compile();
 }

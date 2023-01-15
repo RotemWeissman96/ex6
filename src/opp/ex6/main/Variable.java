@@ -74,6 +74,10 @@ public class Variable {
         }
     }
 
+    public void setValueTrue(){
+        this.value = true;
+    }
+
     public static void compileVariableDeclaration(String line, boolean global, HashMapVariable map) {
         String type = null;
         boolean finalVariable = false;

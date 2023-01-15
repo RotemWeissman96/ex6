@@ -16,8 +16,8 @@ public class Scope {
         boolean lastReturn = false;
         while ((line = bufferedReader.readLine()) != null) {
             line = line.trim();
+            if (line.equals("")) {continue;}
             if (line.startsWith("}") && line.substring(1).trim().equals("")){
-//                currMap.printMaps();
                 return lastReturn;
             } else {
                 lastReturn = RegularExpressions.RETURN_LINE_PATTERN.matcher(line).matches();

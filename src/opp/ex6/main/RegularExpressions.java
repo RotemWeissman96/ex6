@@ -47,8 +47,8 @@ public class RegularExpressions {
             "("+POSSIBLE_SPACE+BOOLEAN_VAR_REGEX+
                     "(?:"+POSSIBLE_SPACE+AND_OR+POSSIBLE_SPACE+BOOLEAN_VAR_REGEX+")*"+POSSIBLE_SPACE+")";
     public static final String WHILE_IF_REGEX =
-            POSSIBLE_SPACE+"(?:"+IF+"|"+WHILE+")"+POSSIBLE_SPACE+"\\("+CONDITION_REGEX + "\\)" +
-                    POSSIBLE_SPACE + OPEN_BRACKETS + POSSIBLE_SPACE;
+            POSSIBLE_SPACE+"(?:"+IF+"|"+WHILE+")"+POSSIBLE_SPACE+"\\("+ CONDITION_REGEX + "\\)" +
+                    POSSIBLE_SPACE + OPEN_CURLY_BRACKETS + POSSIBLE_SPACE;
     public static final String RETURN_LINE_REGEX =
             POSSIBLE_SPACE + RETURN + POSSIBLE_SPACE + COLON + POSSIBLE_SPACE;
     public static final String METHOD_ARGUMENTS_REGEX =
@@ -84,5 +84,4 @@ public class RegularExpressions {
     public static Pattern END_METHOD_CALL_PATTERN = Pattern.compile(ENDING_METHOD_CALL);
     public static Pattern IS_METHOD_CALL_PATTERN = Pattern.compile(
             POSSIBLE_SPACE + FUNCTION_NAME_REGEX + POSSIBLE_SPACE + "\\(");
-//    public static Pattern ASSINGMENT_LINE_PATTERN = Pattern.compile();
 }

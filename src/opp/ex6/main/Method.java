@@ -73,6 +73,7 @@ public class Method {
         String type = matcher.group(1);
         Variable variable = VariableFactory.createVariable(type, false);
         variable.setFinale(finalVariable);
+        variable.setValueTrue();
         functionArguments.add(type);
         line = line.substring(matcher.end());
         return currMap.validatingName(line, variable, globalRun);

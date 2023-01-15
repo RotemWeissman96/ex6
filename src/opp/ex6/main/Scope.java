@@ -27,7 +27,7 @@ public class Scope {
             if (line.startsWith("//")){continue;}
             line = line.trim();
             if (line.equals("")) {continue;}
-            if (line.startsWith(CLOSE_CURLY_BRACKETS) && line.substring(1).trim().equals("")){
+            if (line.startsWith("}") && line.substring(1).trim().equals("")){
                 return lastReturn;
             } else {
                 // if it's the return value
@@ -75,12 +75,13 @@ public class Scope {
                 condition = checkValidConditionArgument(condition, map);
             }
         } else {
-            System.out.println("raise error: wrong if/while syntax: " + line);
+            throw new SjavacException(SjavacException.IF_WHILE_SYNTAX_ERR + line);
         }
         compileScope(bufferedReader, currMap, methods);
     }
 
-    private static String checkValidConditionArgument(String condition, HashMapVariable map) {
+    private static String checkValidConditionArgument(String condition, HashMapVariable map)
+            throws SjavacException{
         Variable var;
         condition = condition.trim();
         Matcher matcher = ALL_BOOLEAN_PATTERN.matcher(condition);
@@ -91,20 +92,17 @@ public class Scope {
             if (matcher.lookingAt()) {
                 if ((var = map.getCurrentScope(matcher.group(1))) == null) { // first check local
                     if ((var = map.getOuterScope(matcher.group(1))) == null) { // then check outer
-                        System.out.println("raise error: this variable does not exist: " + matcher.group(1));
-                        return "";
+                        throw new SjavacException(SjavacException.VAR_NOT_EXIST_ERR + matcher.group(1));
                     }
                 }
                 if (VariableFactory.BOOLEAN_VALID_TYPES.contains(var.getType()) && var.getValue()){
                     //check if the type is boolean friendly and that the var was initiated
                     condition = condition.substring(matcher.end()).trim();
                 } else {
-                    System.out.println("raise error: this variable is not a initialized " +
-                            "boolean: " + matcher.group(1));
-                    return "";
+                    throw new SjavacException(SjavacException.VAR_IS_NULL_ERR + matcher.group(1));
                 }
             } else {
-                System.out.println("raise error: this variable name is not valid: " + condition);
+                throw new SjavacException(SjavacException.INVALID_VAR_NAME_ERR + condition);
             }
         }
         return condition;
@@ -127,10 +125,10 @@ public class Scope {
             }
             matcher = RegularExpressions.COLON_PATTERN.matcher(line);
             if (!matcher.lookingAt()) {  // end of line must be ;
-                System.out.println("raise error: line must end with ;");
+                throw new SjavacException(SjavacException.END_COLON_ERR);
             }
         }else {
-            System.out.println("raise error: line does not fit the syntax");
+            throw new SjavacException(SjavacException.SYNTAX_ERR + line);
         }
     }
 
@@ -146,12 +144,12 @@ public class Scope {
         if (matcher.lookingAt()) {
             if((variable = map.getCurrentScope(matcher.group(1))) == null) {
                 if ((variable = map.getOuterScope(matcher.group(1))) == null) {
-                    System.out.println("raise error: this variable was not declared: " + matcher.group(1));
+                    throw new SjavacException(SjavacException.VAR_NOT_EXIST_ERR + matcher.group(1));
                 }
             }
             line = line.substring(matcher.end());
         } else {
-            System.out.println("raise error: that is not a valid variable name: " + matcher.group(1));
+            throw new SjavacException(SjavacException.VAR_NOT_EXIST_ERR + line);
         }
         matcher = RegularExpressions.ASSIGN_PATTERN.matcher(line);
         if (matcher.lookingAt()) {
@@ -159,7 +157,7 @@ public class Scope {
             variable.setValue(matcher.group(1), map);
             line = line.substring(matcher.end());
         } else {
-            System.out.println("raise error: assignment syntax error" + line);
+            throw new SjavacException(SjavacException.SYNTAX_ERR + line);
         }
         return line;
     }

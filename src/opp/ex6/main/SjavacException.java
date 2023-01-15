@@ -17,6 +17,16 @@ public class SjavacException extends Exception{
             "return;";
     public static final String VOID_SPACING_ERR = "raise error: the void does not have space from the name";
     public static final String INVALID_FUNCTION_NAME_ERR = "raise error: the function name was invalid: ";
+    public static final String FUN_HEAD_ERR = "raise error: Function head does not match syntax: ";
+    public static final String SCOPE_NOT_CLOSED_ERR = "raise error: some scope was not closed";
+    public static final String INVALID_ARG_LIST_ERR = "raise error: this is not a valid argument list: ";
+    public static final  String NOT_ENOUGH_ARGS_ERR = "raise error: there are to few arguments or end of " +
+            "line out of order";
+    public static final String METHOD_NAME_CALL_ERR = "raise error: there is no method with that name: ";
+    public static final String IF_WHILE_SYNTAX_ERR = "raise error: wrong if/while syntax: ";
+    public static final String VAR_NOT_EXIST_ERR = "raise error: this variable does not exist: ";
+    public static final String VAR_IS_NULL_ERR =  "raise error: this variable is not a initialized boolean: ";
+    public static final String SYNTAX_ERR = "raise error: line does not fit the syntax: ";
     public SjavacException(String message) {
         super(message);
     }

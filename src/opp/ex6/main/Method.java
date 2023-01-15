@@ -80,7 +80,7 @@ public class Method {
         // checking for the end with a "{"
         matcher = RegularExpressions.ENDING_HEAD_FUN_PATTERN.matcher(line);
         if(!matcher.matches()){
-            System.out.println("the function dos not end well");
+            throw new SjavacException(SjavacException.FUN_HEAD_ERR + line);
         }
     }
 
@@ -130,7 +130,7 @@ public class Method {
         // checking the type of the argument
         matcher = RegularExpressions.TYPE_PATTERN.matcher(line);
         if(!matcher.lookingAt()) {
-            System.out.println("raise error: that variable type does not exist");
+            throw new SjavacException(SjavacException.INVALID_VAR_TYPE_ERR + line);
         }
         // creating a variable and adding it to the map
         String type = matcher.group(1);
@@ -161,7 +161,7 @@ public class Method {
             }
         }
         if(line == null) {
-            System.out.println("raise error: some scope was not closed");
+            throw new SjavacException(SjavacException.SCOPE_NOT_CLOSED_ERR);
         }
     }
 
@@ -186,7 +186,7 @@ public class Method {
                         testVar.setValue(matcher.group(1), map);
                         argumentList = argumentList.substring(matcher.end());
                     } else {
-                        System.out.println("raise error: this is not a valid argument list: " + line);
+                        throw new SjavacException(SjavacException.INVALID_ARG_LIST_ERR + line);
                     }
                     matcher = RegularExpressions.COMA_PATTERN.matcher(argumentList);
                     if (matcher.lookingAt()){
@@ -195,13 +195,13 @@ public class Method {
                 }
                 matcher = RegularExpressions.END_METHOD_CALL_PATTERN.matcher(argumentList);
                 if (!matcher.matches()) {
-                    System.out.println("raise error: there are to few arguments or end of line out of order");
+                    throw new SjavacException(SjavacException.NOT_ENOUGH_ARGS_ERR);
                 }
             } else {
-                System.out.println("raise error: there is no method with that name: " + matcher.group(1));
+                throw new SjavacException(SjavacException.METHOD_NAME_CALL_ERR + matcher.group(1));
             }
         } else {
-            System.out.println("raise error: this is not a valid function name");
+            throw new SjavacException(SjavacException.INVALID_FUNCTION_NAME_ERR + line);
         }
     }
 }

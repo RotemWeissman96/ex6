@@ -1,6 +1,7 @@
 package opp.ex6.main;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,8 +62,6 @@ public class Sjavac {
                 Scope.compileAssignment(line, map);
                 // if it's not a declaration and not a method, assume it's an assign
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -82,8 +81,6 @@ public class Sjavac {
                     method.compileMethodBody(bufferedReader, map, line);
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

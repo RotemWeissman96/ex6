@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
+import static opp.ex6.main.RegularExpressions.*;
 
 //test
 public class Sjavac {
@@ -28,10 +29,9 @@ public class Sjavac {
         try (FileReader fileReader = new FileReader(path);
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
             while ((line = bufferedReader.readLine()) != null) {
+                if (line.startsWith("//")) {continue;}
                 line = line.trim();
-                if (line.equals("") || line.startsWith("//")) { // if line was all comma or an empty line
-                    continue;
-                }
+                if (line.equals("")) {continue;}
                 if (line.startsWith("void")) {
                     new Method(methods).SaveAndSkipMethod(bufferedReader, map, line);
                     continue;

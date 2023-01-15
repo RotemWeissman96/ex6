@@ -15,6 +15,7 @@ public class Scope {
         String line;
         boolean lastReturn = false;
         while ((line = bufferedReader.readLine()) != null) {
+            if (line.startsWith("//")){continue;}
             line = line.trim();
             if (line.equals("")) {continue;}
             if (line.startsWith("}") && line.substring(1).trim().equals("")){
@@ -87,18 +88,21 @@ public class Scope {
      * @param map
      */
     public static void compileAssignment(String line, HashMapVariable map) { // throws InvalidValue / WrongSyntax
-        line = handlingCompileAssignment(line, map);
-        Matcher matcher = COMA_PATTERN.matcher(line);
-        //TODO: check if line fits an assignment
-
-        while (matcher.lookingAt()){
-            line = line.substring(matcher.end());
+        Matcher matcher = VALID_ASSIGNMENT_PATTERN.matcher(line);
+        if (matcher.matches()) {
             line = handlingCompileAssignment(line, map);
             matcher = COMA_PATTERN.matcher(line);
-        }
-        matcher = RegularExpressions.COLON_PATTERN.matcher(line);
-        if (!matcher.lookingAt()) {  // end of line must be ;
-            System.out.println("raise error: line must end with ;");
+            while (matcher.lookingAt()) {
+                line = line.substring(matcher.end());
+                line = handlingCompileAssignment(line, map);
+                matcher = COMA_PATTERN.matcher(line);
+            }
+            matcher = RegularExpressions.COLON_PATTERN.matcher(line);
+            if (!matcher.lookingAt()) {  // end of line must be ;
+                System.out.println("raise error: line must end with ;");
+            }
+        }else {
+            System.out.println("raise error: line does not fit the syntax");
         }
     }
 

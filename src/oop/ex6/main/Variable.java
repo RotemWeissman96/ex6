@@ -1,4 +1,4 @@
-package opp.ex6.main;
+package oop.ex6.main;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;

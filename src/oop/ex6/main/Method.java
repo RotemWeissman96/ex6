@@ -1,4 +1,4 @@
-package opp.ex6.main;
+package oop.ex6.main;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 
 import static java.lang.Boolean.FALSE;
-import static opp.ex6.main.RegularExpressions.CLOSE_CURLY_BRACKETS;
-import static opp.ex6.main.RegularExpressions.EMPTY;
 
 public class Method {
     private final HashMap<String, ArrayList<String>> methods;
@@ -158,7 +156,7 @@ public class Method {
         int countBrackets = 1;
         while (countBrackets != 0 && (line = bufferedReader.readLine()) != null) {
             line = line.trim();
-            if (line.startsWith(CLOSE_CURLY_BRACKETS) && line.substring(1).trim().equals(EMPTY)) {
+            if (line.startsWith(RegularExpressions.CLOSE_CURLY_BRACKETS) && line.substring(1).trim().equals(RegularExpressions.EMPTY)) {
                 countBrackets -= 1;
             } else if (line.startsWith(RegularExpressions.IF) || line.startsWith(RegularExpressions.WHILE)) {
                 countBrackets += 1;

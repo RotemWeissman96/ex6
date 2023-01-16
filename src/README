@@ -1,3 +1,6 @@
+rotem.weissman
+avikupinsky
+
 =====File description======
 
 Method - this class handles all method related lines.
@@ -29,9 +32,22 @@ instructed.
 Method and Scope - At first we though that the flow of the code should be in Sjavac. However the code became
 long and it was getting tough to understand it or its flow. So we decided to split the code into logical
 classes, each handles a specific part of the code.
+methods data structure - HashMap<methodName, argumentsTypes>, we save at the global run all the methods in
+this data structure, so that when called we can compare the argument types with the variables supplied to the
+function call.
+
+
+====Implementation issues====
+Our most time consuming task of this exercise was to decide on the Variable and HashMapVariable design. it was
+challenging because that as we kept reading the instructions again and again, we continued to encounter more
+and more behaviours that we wanted to come up with a design that satisfy all of them.
+One of the issues we faced was to save all the global variables and methods in the global run and not saving
+them on the methods run while not duplicating code. We could copy and paste a lot of code with small
+differences but we decided to have a boolean argument called globalRun which indicate if we are on a global
+run or not. In order to achieve the wanted behaviour we had to add if's and else's so some methods became a
+bit long. Eventually we divided those methods.
 
 =====Exceptions======
-
 We decided to use exceptions in order to handle the errors in the s-java file. We decided to so because of the
 exception mechanism. First of all if we had returned a value that indicates a success or a failure we will be
 giving up the option to return something else, like the rest of the line in many cases. Another reason is the
@@ -42,11 +58,29 @@ We though of creating 3 types of exceptions one for syntax, one for wrong type, 
 usage. However we came to the conclusion that there will be no difference between those exceptions and there
 handling so we created only one class with multiple error massages to chose from.
 
+=====Questions====
+6.2.1 In order to modify out solution to support another types all changes should take place in
+VariableFactory
+and RegularExpressions. In regular expressions, you should add the relevant regex for that type and the name
+of that type to the types regex. In VariableFactory all you need to do is to add a possible type list for
+that type so that the Factory can construct it. All of that could be in VariableFactory however we decided to
+use the RegularExpression class to create some order in out code. If the new type values consist of
+characters other then {0-9.-+} then the extra characters should also be added to a regex checking for a valid
+assignment.
+6.2.2 In order to create different method return types we need to do the following:
+        1. In the methods HashMap we would save as the first argument to be the return value of the method.
+        2. we would have to check in the CompileAssignment method if a var was assigned with a method call, if
+         so we need to save that var type and compare it with the first argument saved in line 1.
+
+
+
+
+
 
 =====Testing======
 
 Test_001
-checks a lot of scenarios were the code ir correct and should return 0.
+checks a lot of scenarios were the code is correct and should return 0.
 
 
 // from here all the tests should fail and return 1

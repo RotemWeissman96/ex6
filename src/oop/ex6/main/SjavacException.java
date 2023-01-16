@@ -1,4 +1,4 @@
-package opp.ex6.main;
+package oop.ex6.main;
 
 public class SjavacException extends Exception{
     public static final String VAR_ALREADY_EXIST_ERR = "raise error: this variable name is already used in " +

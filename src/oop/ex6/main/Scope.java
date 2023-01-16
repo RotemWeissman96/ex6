@@ -1,12 +1,10 @@
-package opp.ex6.main;
+package oop.ex6.main;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
-
-import static opp.ex6.main.RegularExpressions.*;
 
 public class Scope {
 
@@ -23,10 +21,10 @@ public class Scope {
         boolean lastReturn = false;
         while ((line = bufferedReader.readLine()) != null) {
             //it's "//" we skip over it
-            if (line.startsWith(DOUBLE_LINES)){continue;}
+            if (line.startsWith(RegularExpressions.DOUBLE_LINES)){continue;}
             line = line.trim();
-            if (line.equals(EMPTY)) {continue;}
-            if (line.startsWith(CLOSE_CURLY_BRACKETS) && line.substring(1).trim().equals("")){
+            if (line.equals(RegularExpressions.EMPTY)) {continue;}
+            if (line.startsWith(RegularExpressions.CLOSE_CURLY_BRACKETS) && line.substring(1).trim().equals("")){
                 return lastReturn;
             } else {
                 // if it's the return value
@@ -35,7 +33,7 @@ public class Scope {
                     continue;
                 }
                 // checks it contains "if" or "while"
-                if (line.startsWith(IF) || line.startsWith(WHILE)) {
+                if (line.startsWith(RegularExpressions.IF) || line.startsWith(RegularExpressions.WHILE)) {
                     compileIfWhile(line, bufferedReader, currMap, methods);
                 } else if (HashMapVariable.isLineVariableDeclaration(line)) {
                     Variable.compileVariableDeclaration(line, currMap);
@@ -64,12 +62,12 @@ public class Scope {
                                        HashMap<String, ArrayList<String>> methods)
             throws IOException, SjavacException { // throws InvalidValue / WrongSyntax
         HashMapVariable currMap = new HashMapVariable(map);
-        Matcher matcher = WHILE_IF_PATTERN.matcher(line);
+        Matcher matcher = RegularExpressions.WHILE_IF_PATTERN.matcher(line);
         if(matcher.matches()){ // make sure the if/while syntax is correct
             String condition = matcher.group(1);
             condition = checkValidConditionArgument(condition, map);
-            while (!condition.equals(EMPTY)){
-                matcher = AND_OR_PATTERN.matcher(condition);
+            while (!condition.equals(RegularExpressions.EMPTY)){
+                matcher = RegularExpressions.AND_OR_PATTERN.matcher(condition);
                 matcher.lookingAt();
                 condition = condition.substring(matcher.end());
                 condition = checkValidConditionArgument(condition, map);
@@ -90,11 +88,11 @@ public class Scope {
             throws SjavacException {
         Variable var;
         condition = condition.trim();
-        Matcher matcher = ALL_BOOLEAN_PATTERN.matcher(condition);
+        Matcher matcher = RegularExpressions.ALL_BOOLEAN_PATTERN.matcher(condition);
         if (matcher.lookingAt()){ // if it's a constant valid boolean
             condition = condition.substring(matcher.end());
         } else { // assume it's a variable name
-            matcher = VAR_NAME_PATTERN.matcher(condition);
+            matcher = RegularExpressions.VAR_NAME_PATTERN.matcher(condition);
             if (matcher.lookingAt()) {
                 if ((var = map.getCurrentScope(matcher.group(1))) == null) { // first check local
                     if ((var = map.getOuterScope(matcher.group(1))) == null) { // then check outer
@@ -121,14 +119,14 @@ public class Scope {
      * @param map the map where we kept all the arguments
      */
     public static void compileAssignment(String line, HashMapVariable map) throws SjavacException {
-        Matcher matcher = VALID_ASSIGNMENT_PATTERN.matcher(line);
+        Matcher matcher = RegularExpressions.VALID_ASSIGNMENT_PATTERN.matcher(line);
         if (matcher.matches()) {
             line = handlingCompileAssignment(line, map);
-            matcher = COMA_PATTERN.matcher(line);
+            matcher = RegularExpressions.COMA_PATTERN.matcher(line);
             while (matcher.lookingAt()) {
                 line = line.substring(matcher.end());
                 line = handlingCompileAssignment(line, map);
-                matcher = COMA_PATTERN.matcher(line);
+                matcher = RegularExpressions.COMA_PATTERN.matcher(line);
             }
             matcher = RegularExpressions.COLON_PATTERN.matcher(line);
             if (!matcher.lookingAt()) {  // end of line must be ;

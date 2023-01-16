@@ -71,6 +71,12 @@ assignment.
         1. In the methods HashMap we would save as the first argument to be the return value of the method.
         2. we would have to check in the CompileAssignment method if a var was assigned with a method call, if
          so we need to save that var type and compare it with the first argument saved in line 1.
+      In order to add Using methods of standard java for example System.out.println,
+        1. if there is imports involve, so on the global run we would add he import and then we can use any
+        import function if we would see them in our code.
+        2. if there is no imports involve then we would add them to the methods map like the function
+         that we added on the global run and when we use theme we would call them form there.
+
 
 
 

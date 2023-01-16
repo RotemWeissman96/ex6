@@ -1,0 +1,77 @@
+int int1;
+int int2 = 13;
+int int3 = +4;
+int int4 = -4;
+
+double double1;
+double double2 = 1;
+double double3 = .1;
+double double4 = 1.;
+double double5 = 1.1;
+double double6 = +1;
+double double7 = -1;
+double double8 = +.1;
+double double9 = -.1;
+double double10 = +1.;
+double double11 = -1.;
+double double12 = +1.1;
+double double13 = -1.1;
+double double14 = double2;
+double double15 = int2;
+
+char char1;
+char char2 = 'a';
+char char3 = '4';
+
+char char4 = '.';
+char char5 = ' ';
+char char6 = '%';
+char char7 = char2;
+
+String string1 = "";
+String string2;
+String string3 = "  ";
+String string4 = " ";
+String string5 = "fa25fgf436%!@# awd 21235asd AWDF";
+
+boolean boo1 = true;
+boolean boo2 = false;
+boolean boo3 = 0;
+boolean boo4 = +1;
+boolean boo5 = -4;
+boolean boo6 = -3.;
+boolean boo7 = +.0;
+   boolean    boo8    =    boo2   ;
+boolean boo9 = int3;
+boolean boo10 = double4;
+boolean boo11;
+        boolean         a       =                   true            ;
+boo11 = double15;
+boo9 = true;
+boo5 = boo3;
+
+//ewqrqwetqwet qwerqwetrtaew
+// asdwd 1421awe asdqw;
+
+void g(int funInt1, double boo2, final char funChar1, String funString1, boolean funBoolean1){
+    string2 = "adsgewwaf";
+    char c3 = 'd';
+    String d4;
+// agasdge
+    funString1 = "gasdgwe";
+    g(3, 4.4, 'f', string3, boo3);
+    return;
+}
+
+void g2     (   int funInt1,    double     boo2    , char funChar1, String funString1, boolean funBoo1  ) {
+        boolean boo1 = a;
+        int _b = -3;
+        char c3 = 'd';
+        String d4;
+        g       (_b, 4.4, 'f', string3     ,     boo3);
+                    return;
+                    }
+
+
+
+

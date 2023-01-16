@@ -1,0 +1,3 @@
+// checking giving the same name to different types
+    int c = 4;
+    string c = "name";

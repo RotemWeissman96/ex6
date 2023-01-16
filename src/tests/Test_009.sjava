@@ -1,0 +1,8 @@
+// checking invalid name
+void foo(int a){
+    return;
+}
+void boo(){
+    double a=4;
+    foo(a);
+}

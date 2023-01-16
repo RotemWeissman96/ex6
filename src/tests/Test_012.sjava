@@ -1,0 +1,5 @@
+// checks that there is "," between names in int
+void foo() {
+int a b;
+return;
+}

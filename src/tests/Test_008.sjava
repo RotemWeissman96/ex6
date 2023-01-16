@@ -1,0 +1,5 @@
+// checking final in function change
+     void foo3(final int a){
+     a = 5;
+     return;
+     }

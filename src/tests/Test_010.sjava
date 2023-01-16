@@ -1,0 +1,5 @@
+// the return is not in the end of the function
+void foo(){
+return;
+int a;
+}

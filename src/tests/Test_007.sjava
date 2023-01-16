@@ -1,0 +1,3 @@
+// checking operators
+    int a = 3-5;
+    String b = "oo" + "P";

@@ -1,0 +1,2 @@
+//checks if is starts _ without anything else
+    string b= "_"

@@ -1,0 +1,2 @@
+// checking giving the same name to different types
+    int a = ++1;

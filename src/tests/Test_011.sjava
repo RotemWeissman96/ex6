@@ -1,0 +1,5 @@
+// giving a double to a int
+void foo() {
+int a = 5.2; 
+return;
+}

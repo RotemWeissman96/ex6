@@ -71,17 +71,24 @@ assignment.
         1. In the methods HashMap we would save as the first argument to be the return value of the method.
         2. we would have to check in the CompileAssignment method if a var was assigned with a method call, if
          so we need to save that var type and compare it with the first argument saved in line 1.
-      In order to add Using methods of standard java for example System.out.println,
-        1. if there is imports involve, so on the global run we would add he import and then we can use any
-        import function if we would see them in our code.
-        2. if there is no imports involve then we would add them to the methods map like the function
-         that we added on the global run and when we use theme we would call them form there.
+      In order to add Using methods of standard java for example System.out.println:
+         If the question referred to functions that need no import and we can know them all in advance, then
+         all we need to do is to add them (and their arguments type) to the method HashMap at the main
+         function, meaning to add a method that adds a lot of pre known methods name and arguments to
+         initialize the methods data structure with the known standard java methods.
 
-
-
-
-
-
+6.3
+regularExpression1: "((?:[a-zA-Z][_\\w]*)|(?:_[_\\w]+))"
+This regular expression check it a string is a valid argument name. It has 2 options: 1. That name starts with
+ a letter, then the next characters can be {_a-zA-z0-9} even zero times. 2. That name starts with _ and then i
+  must contain at least one more char from the group {_a-zA-z0-9};
+regularExpression2: "(?:"+ALL_BOOLEAN_REGEX + "|" + VAR_NAME_REGEX + ")"
+   ALL_BOOLEAN_REGEX contains all the possible boolean constant values (true, false, int and double)
+   ALL_BOOLEAN_REGEX = "(?:" + IS_BOOLEAN + "|" + IS_DOUBLE + "|" + IS_INT + ")";
+   VAR_NAME_REGEX is regularExpression1.
+   notice that all the brackets in this expression start with ?: that's because that we wanted to get the
+   variable name (if its a variable name) so that the next step of the program is to check if its a boolean
+   supporting type and if its initialized.
 
 =====Testing======
 

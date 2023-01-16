@@ -36,14 +36,20 @@ public class VariableFactory {
      * @return a pattern suited for type
      */
     private static Pattern typeRegex(String type){
-        return switch (type) {
-            case RegularExpressions.INT -> RegularExpressions.INT_PATTERN;
-            case RegularExpressions.DOUBLE -> RegularExpressions.DOUBLE_PATTERN;
-            case RegularExpressions.CHAR -> RegularExpressions.CHAR_PATTERN;
-            case RegularExpressions.STRING -> RegularExpressions.STRING_PATTERN;
-            case RegularExpressions.BOOLEAN -> RegularExpressions.BOOLEAN_PATTERN;
-            default -> null;
-        };
+        switch (type) {
+            case RegularExpressions.INT:
+                return RegularExpressions.INT_PATTERN;
+            case RegularExpressions.DOUBLE:
+                return RegularExpressions.DOUBLE_PATTERN;
+            case RegularExpressions.CHAR:
+                return RegularExpressions.CHAR_PATTERN;
+            case RegularExpressions.STRING:
+                return RegularExpressions.STRING_PATTERN;
+            case RegularExpressions.BOOLEAN:
+                return RegularExpressions.BOOLEAN_PATTERN;
+            default:
+                return null;
+        }
     }
 
     /**
@@ -52,13 +58,18 @@ public class VariableFactory {
      * @return a list of strings that fit this type
      */
     private static ArrayList<String> validTypeAssignment(String type){
-        return switch (type) {
-            case RegularExpressions.INT -> INT_VALID_TYPES;
-            case RegularExpressions.DOUBLE -> DOUBLE_VALID_TYPES;
-            case RegularExpressions.CHAR -> CHAR_VALID_TYPES;
-            case RegularExpressions.STRING -> STRING_VALID_TYPES;
-            case RegularExpressions.BOOLEAN -> BOOLEAN_VALID_TYPES;
-            default -> null;
-        };
+        switch (type) {
+            case RegularExpressions.INT:
+                return INT_VALID_TYPES;
+            case RegularExpressions.DOUBLE:
+                return DOUBLE_VALID_TYPES;
+            case RegularExpressions.CHAR:
+                return CHAR_VALID_TYPES;
+            case RegularExpressions.STRING:
+                return STRING_VALID_TYPES;
+            case RegularExpressions.BOOLEAN:
+                return BOOLEAN_VALID_TYPES;
+            default: return null;
+        }
     }
 }

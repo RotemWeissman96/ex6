@@ -64,7 +64,6 @@ public class Scope {
                                        HashMap<String, ArrayList<String>> methods)
             throws IOException, SjavacException { // throws InvalidValue / WrongSyntax
         HashMapVariable currMap = new HashMapVariable(map);
-        Variable var = null;
         Matcher matcher = WHILE_IF_PATTERN.matcher(line);
         if(matcher.matches()){ // make sure the if/while syntax is correct
             String condition = matcher.group(1);

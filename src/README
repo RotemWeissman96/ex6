@@ -1,0 +1,18 @@
+
+
+
+
+
+
+
+
+// from here all the tests should fail and return 1
+Test_002
+checks if we give a value to final value after we given it one
+
+
+Test_003
+checks if given the same name to different types
+
+
+Test_004

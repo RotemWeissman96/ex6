@@ -91,4 +91,5 @@ public class RegularExpressions {
     public static Pattern VALID_ASSIGNMENT_PATTERN = Pattern.compile(POSSIBLE_SPACE + VAR_NAME_REGEX +
             ASSIGN_PATTERN.pattern() + "(?:" + SPACED_COMA_REGEX + VAR_NAME_REGEX +  ASSIGN_PATTERN.pattern() + ")*"
             + POSSIBLE_SPACE + COLON + POSSIBLE_SPACE);
+    public static Pattern AND_OR_PATTERN = Pattern.compile(POSSIBLE_SPACE + AND_OR + POSSIBLE_SPACE);
 }

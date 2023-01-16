@@ -71,6 +71,9 @@ public class Scope {
             String condition = matcher.group(1);
             condition = checkValidConditionArgument(condition, map);
             while (!condition.equals("")){
+                matcher = AND_OR_PATTERN.matcher(condition);
+                matcher.lookingAt();
+                condition = condition.substring(matcher.end());
                 condition = checkValidConditionArgument(condition, map);
             }
         } else {

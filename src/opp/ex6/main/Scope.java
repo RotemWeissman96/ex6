@@ -113,10 +113,11 @@ public class Scope {
         return condition;
     }
 
+
     /**
-     *
-     * @param line
-     * @param map
+     * this function deals with assignment in the function we are reading from and making sure its current
+     * @param line the current line in the file
+     * @param map the map where we kept all the arguments
      */
     public static void compileAssignment(String line, HashMapVariable map) throws SjavacException {
         Matcher matcher = VALID_ASSIGNMENT_PATTERN.matcher(line);
@@ -138,13 +139,13 @@ public class Scope {
     }
 
     /**
-     *
-     * @param line
-     * @param map
-     * @return
+     * checks the name of the assignment
+     * @param line the current line in the file
+     * @param map the map where we kept all the arguments
+     * @return the line where at
      */
     private static String handlingCompileAssignment(String line, HashMapVariable map) throws SjavacException{
-        Variable variable = null;
+        Variable variable;
         Matcher matcher = RegularExpressions.VAR_NAME_PATTERN.matcher(line);
         if (matcher.lookingAt()) {
             if((variable = map.getCurrentScope(matcher.group(1))) == null) {

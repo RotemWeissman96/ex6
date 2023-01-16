@@ -29,6 +29,14 @@ public class Variable {
         this.value = false;
     }
 
+    public Variable(Variable other){
+        this.type = other.type;
+        this.finalVariable = other.finalVariable;
+        this.typesPatterns = other.typesPatterns;
+        this.allowedTypesAssignment = other.allowedTypesAssignment;
+        this.value = other.value;
+    }
+
     /**
      * get the type of the Variable
      * @return string type

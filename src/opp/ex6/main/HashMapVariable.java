@@ -27,11 +27,11 @@ public class HashMapVariable {
     public HashMapVariable(HashMapVariable other) { // copy constructor
         currentScope = new HashMap<>();
         outerScope = new HashMap<>();
-        for (String variable : other.outerScope.keySet()){ // deep copy outer scope to outer scope
-            this.outerScope.put(variable, other.outerScope.get(variable));
+        for (String variableName : other.outerScope.keySet()){ // deep copy outer scope to outer scope
+            this.outerScope.put(variableName, new Variable(other.outerScope.get(variableName)));
         }
-        for (String variable : other.currentScope.keySet()){ // deep copy other.inner scope to outer scope
-            this.outerScope.put(variable, other.currentScope.get(variable));
+        for (String variableName : other.currentScope.keySet()){ // deep copy other.inner scope to outer scope
+            this.outerScope.put(variableName, new Variable(other.currentScope.get(variableName)));
         }
     }
 

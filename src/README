@@ -1,18 +1,127 @@
+=====File description======
+
+Method - this class handles all method related lines.
+RegularExpressions - a class to obtain all the necessary regular expressions. this class also creates all the
+Patterns needed for the rest of the solution.
+Scope - a class to organize the code, handles a scope of code. handles simple scope and an if/while scope
+Sjavac - the main function, calls for a global round and a methods round and handles exceptions
+SjvacExceptions - the exception that we throw in case of an error in the s-java file
+Variable - a class to save all the necessary information of each variable
+VariableFactory - a class to create a Variable instance easily
+HashMapVariable - a data structure to save all the variables. - more information at the design
+
+=====design========
+Variable - The variable class design is based on the mode design pattern. Each variable created should behave
+differently based on its Type, whether or not its initialized of whether or not its Final. So we decided
+instead of creating an abstract class for variable and then implement it for each different type and for final
+or not and for initialize or not, to create a variable with those modes and the variable behaves according to
+its modes.
+VariableFactory - because of the different behaviours according to the modes, and to keep the code adjustable
+and simple we created the Factory. the factory receives the information about the variable and make sure that
+the variable its creating will behave accordingly. For example, it gets the type and create a list of all
+allowed types to be assigned to that variable as well as a Pattern list that help us decide if an assignment
+is valid or not.
+HashMapVariable - The HashMapVariable contains 2 HashMaps<varName, Variable> one for the current scope and
+another for the outerScope. Variable from each map should behave differently, that is why we decided on that
+structure. Each scope our code gets into a copy constructor deep copy the last scope's HashMapVariable. that
+way we make sure that when the scope closes, all variables get back to the status they were before, as
+instructed.
+Method and Scope - At first we though that the flow of the code should be in Sjavac. However the code became
+long and it was getting tough to understand it or its flow. So we decided to split the code into logical
+classes, each handles a specific part of the code.
+
+=====Exceptions======
+
+We decided to use exceptions in order to handle the errors in the s-java file. We decided to so because of the
+exception mechanism. First of all if we had returned a value that indicates a success or a failure we will be
+giving up the option to return something else, like the rest of the line in many cases. Another reason is the
+simplicity the exception solution gives us in this case, if there is an error, i know that the answer is 1 and
+it doesn't matter what comes next in the file, so its very natural to exit the program and to propagate the
+exception to the main.
+We though of creating 3 types of exceptions one for syntax, one for wrong type, and one for null argument
+usage. However we came to the conclusion that there will be no difference between those exceptions and there
+handling so we created only one class with multiple error massages to chose from.
 
 
+=====Testing======
 
-
-
-
+Test_001
+checks a lot of scenarios were the code ir correct and should return 0.
 
 
 // from here all the tests should fail and return 1
 Test_002
-checks if we give a value to final value after we given it one
+checks if we give a value to final value after we given it one.
 
 
 Test_003
-checks if given the same name to different types
+checks if given the same name to different types.
 
 
 Test_004
+checks given twice "+" sign to a int.
+
+
+Test_005
+checks if a name stars with the format it should (it should fail here because it start with a number).
+
+
+Test_006
+checks if a name stars with the format it should (it should fail here because it start with a "_").
+
+
+Test_007
+checks operators on the values.
+
+
+Test_008
+checks in function when we declare a final on the argument and trying to change it.
+
+
+Test_009
+checks if we give a function a invalid type.
+
+
+Test_010
+checks if the return is in the end of the function
+
+
+Test_011
+checks giving a double value to a int in the function
+
+
+Test_012
+checks that there is "," between names in int
+
+
+Test_013
+checks giving a local value from a global value that was not realize.
+
+
+Test_014
+checks giving a local value from a function that returns null.
+
+
+Test_015
+checks giving a local value from a global that was not realize, but was realize in a different function.
+
+
+Test_016
+checks giving a function that it ends with curly buckets.
+
+
+Test_017
+checks if we hav given a bad comment.
+
+
+Test_018
+checks if giving a "if" terms of a string.
+
+
+Test_019
+checks if giving a "if" has no terms at all.
+
+
+Test_020
+checks if giving a "while" terms of a string.
+

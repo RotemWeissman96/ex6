@@ -23,10 +23,10 @@ public class Scope {
         boolean lastReturn = false;
         while ((line = bufferedReader.readLine()) != null) {
             //it's "//" we skip over it
-            if (line.startsWith("//")){continue;}
+            if (line.startsWith(DOUBLE_LINES)){continue;}
             line = line.trim();
-            if (line.equals("")) {continue;}
-            if (line.startsWith("}") && line.substring(1).trim().equals("")){
+            if (line.equals(EMPTY)) {continue;}
+            if (line.startsWith(CLOSE_CURLY_BRACKETS) && line.substring(1).trim().equals("")){
                 return lastReturn;
             } else {
                 // if it's the return value
@@ -68,7 +68,7 @@ public class Scope {
         if(matcher.matches()){ // make sure the if/while syntax is correct
             String condition = matcher.group(1);
             condition = checkValidConditionArgument(condition, map);
-            while (!condition.equals("")){
+            while (!condition.equals(EMPTY)){
                 matcher = AND_OR_PATTERN.matcher(condition);
                 matcher.lookingAt();
                 condition = condition.substring(matcher.end());

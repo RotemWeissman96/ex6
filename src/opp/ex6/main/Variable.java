@@ -110,7 +110,7 @@ public class Variable {
      */
     public static void compileVariableDeclaration(String line, HashMapVariable map)
         throws SjavacException{
-        String type = null;
+        String type;
         boolean finalVariable = false;
         // check final
         Matcher matcher = RegularExpressions.FINAL_PATTERN.matcher(line);
@@ -171,7 +171,7 @@ public class Variable {
 
     /**
      * set the final Variable
-     * @param finalVariable
+     * @param finalVariable set the final Variable
      */
     public void setFinale(boolean finalVariable) {
         if (this.finalVariable){

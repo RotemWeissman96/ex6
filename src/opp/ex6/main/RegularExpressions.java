@@ -24,12 +24,15 @@ public class RegularExpressions {
                                 IS_BOOLEAN = "(" + TRUE + "|" + FALSE + ")";
 
     public static final String EQUAL = "=",
+                                EMPTY = "",
                                 MANDATORY_SPACE = "\\s",
                                 POSSIBLE_SPACE = "\\s*",
                                 COLON =";",
                                 COMA = ",",
+                                DOUBLE_LINES = "//",
                                 OPEN_BRACKETS = "\\(",
                                 CLOSE_BRACKETS = "\\)",
+                                CLOSE_CURLY_BRACKETS = "}",
                                 OPEN_CURLY_BRACKETS_REGEX = "\\{";
 
 // basic expression (building blocks)

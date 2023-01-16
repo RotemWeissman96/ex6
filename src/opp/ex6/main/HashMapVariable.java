@@ -78,13 +78,6 @@ public class HashMapVariable {
         return null; // throw VariableDoNotExist
     }
 
-//    public void printMaps(){
-//        System.out.println("\n====printing maps===\n");
-//        System.out.println("==currentScope==\n");
-//        this.currentScope.forEach((key, value) -> System.out.println(key + ":" + value.getType() + " " + value.getValue()));
-//        System.out.println("\n==outerScope==\n");
-//        this.outerScope.forEach((key, value) -> System.out.println(key + ":" + value.getType() + " " + value.getValue()));
-//    }
 
     /**
      * puting in the current scope the name and its Variable
@@ -99,13 +92,13 @@ public class HashMapVariable {
      * validating the name is current
      * @param line the line where checking
      * @param variable its Variable
-     * @param globalRun
+     * @param globalRun to know if it's the first run or the second run
      * @return to know if its global run
-     * @throws SjavacException
+     * @throws SjavacException throw an error if we need to
      */
     public String validatingName(String line, Variable variable, boolean globalRun)
         throws SjavacException{
-        String name = "";
+        String name;
         Matcher matcher = RegularExpressions.VAR_NAME_PATTERN.matcher(line);
         if (matcher.lookingAt()) {
             name = matcher.group(1);

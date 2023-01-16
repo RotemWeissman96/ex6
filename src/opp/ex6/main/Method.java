@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 
+import static java.lang.Boolean.FALSE;
+import static opp.ex6.main.RegularExpressions.CLOSE_CURLY_BRACKETS;
+import static opp.ex6.main.RegularExpressions.EMPTY;
+
 public class Method {
     private final HashMap<String, ArrayList<String>> methods;
 
@@ -28,7 +32,7 @@ public class Method {
             throws IOException, SjavacException {
         // creates a new map for the current scope
         HashMapVariable currMap = new HashMapVariable(map);
-        compileMethodHead(currMap,line,false);
+        compileMethodHead(currMap,line,FALSE);
         if(!Scope.compileScope(bufferedReader,currMap, methods)){
             throw new SjavacException(SjavacException.METHOD_NO_RETURN_ERR);
         }
@@ -40,11 +44,11 @@ public class Method {
      * @param currMap the map where will keep all the arguments
      * @param line the current line in the file
      * @param globalRun a boolean to know its it's in the global run or the function run
-     * @throws IOException, SjavacException
+     * @throws SjavacException throws an exception when needed
      */
     private void compileMethodHead( HashMapVariable currMap, String line, boolean globalRun)
-            throws IOException, SjavacException { // throws InvalidValue / WrongSyntax
-        String functionName = null;
+            throws SjavacException { // throws InvalidValue / WrongSyntax
+        String functionName;
         // create a ArrayList saving all the local arguments of this function
         ArrayList<String> functionArguments = new ArrayList<>();
         Matcher matcher = RegularExpressions.VOID_PATTERN.matcher(line);
@@ -94,7 +98,7 @@ public class Method {
      */
     private static String saveArgumentCallingFunction(String line, ArrayList<String> functionArguments,
                                                       HashMapVariable currMap, Boolean globalRun)
-                                                    throws IOException, SjavacException{
+                                                    throws  SjavacException{
         boolean finalVariable = false;
         line = checkingMethodArgument(functionArguments,line,currMap,finalVariable, globalRun);
         Matcher matcher = RegularExpressions.NEXT_ARGUMENT_PATTERN.matcher(line);
@@ -154,7 +158,7 @@ public class Method {
         int countBrackets = 1;
         while (countBrackets != 0 && (line = bufferedReader.readLine()) != null) {
             line = line.trim();
-            if (line.startsWith("}") && line.substring(1).trim().equals("")) {
+            if (line.startsWith(CLOSE_CURLY_BRACKETS) && line.substring(1).trim().equals(EMPTY)) {
                 countBrackets -= 1;
             } else if (line.startsWith(RegularExpressions.IF) || line.startsWith(RegularExpressions.WHILE)) {
                 countBrackets += 1;

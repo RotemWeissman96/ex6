@@ -38,19 +38,14 @@ public class VariableFactory {
      * @return a pattern suited for type
      */
     private static Pattern typeRegex(String type){
-        switch (type){
-            case INT:
-                return RegularExpressions.INT_PATTERN;
-            case DOUBLE:
-                return RegularExpressions.DOUBLE_PATTERN;
-            case CHAR:
-                return RegularExpressions.CHAR_PATTERN;
-            case STRING:
-                return RegularExpressions.STRING_PATTERN;
-            case BOOLEAN:
-                return RegularExpressions.BOOLEAN_PATTERN;
-        }
-        return null;
+        return switch (type) {
+            case INT -> RegularExpressions.INT_PATTERN;
+            case DOUBLE -> RegularExpressions.DOUBLE_PATTERN;
+            case CHAR -> RegularExpressions.CHAR_PATTERN;
+            case STRING -> RegularExpressions.STRING_PATTERN;
+            case BOOLEAN -> RegularExpressions.BOOLEAN_PATTERN;
+            default -> null;
+        };
     }
 
     /**
@@ -59,18 +54,13 @@ public class VariableFactory {
      * @return a list of strings that fit this type
      */
     private static ArrayList<String> validTypeAssignment(String type){
-        switch (type){
-            case INT:
-                return INT_VALID_TYPES;
-            case DOUBLE:
-                return DOUBLE_VALID_TYPES;
-            case CHAR:
-                return CHAR_VALID_TYPES;
-            case STRING:
-                return STRING_VALID_TYPES;
-            case BOOLEAN:
-                return BOOLEAN_VALID_TYPES;
-        }
-        return null;
+        return switch (type) {
+            case INT -> INT_VALID_TYPES;
+            case DOUBLE -> DOUBLE_VALID_TYPES;
+            case CHAR -> CHAR_VALID_TYPES;
+            case STRING -> STRING_VALID_TYPES;
+            case BOOLEAN -> BOOLEAN_VALID_TYPES;
+            default -> null;
+        };
     }
 }

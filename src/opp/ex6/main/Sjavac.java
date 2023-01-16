@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static opp.ex6.main.RegularExpressions.*;
+
 
 //test
 public class Sjavac {
@@ -44,11 +46,11 @@ public class Sjavac {
         try (FileReader fileReader = new FileReader(path);
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
             while ((line = bufferedReader.readLine()) != null) {
-                if (line.startsWith("//")) {continue;}
+                if (line.startsWith(DOUBLE_LINES)) {continue;}
                 // trim the line in order to get the first argument without the spaces
                 line = line.trim();
-                if (line.equals("")) {continue;}
-                if (line.startsWith("void")) {
+                if (line.equals(EMPTY)) {continue;}
+                if (line.startsWith(VOID)) {
                     new Method(methods).SaveAndSkipMethod(bufferedReader, map, line);
                     continue;
                 }
@@ -74,7 +76,7 @@ public class Sjavac {
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
             while ((line = bufferedReader.readLine()) != null) {
                 line = line.trim();
-                if (line.startsWith(RegularExpressions.VOID)) {
+                if (line.startsWith(VOID)) {
                     Method method = new Method(methods);
                     method.compileMethodBody(bufferedReader, map, line);
                 }

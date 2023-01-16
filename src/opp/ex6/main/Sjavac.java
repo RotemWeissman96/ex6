@@ -19,9 +19,9 @@ public class Sjavac {
         try {
             HashMapVariable map = new HashMapVariable();
             // we run first time on the file to get all the global argument and to know all the functions
-            globalSearch(args[1], map);
+            globalSearch(args[0], map);
             // the second time we run throw the file we also go to the function search
-            functionsSearch(args[1], map);
+            functionsSearch(args[0], map);
             System.out.println(0);
         } catch (IOException e) {
             System.out.println(2);

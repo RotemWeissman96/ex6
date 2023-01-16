@@ -7,7 +7,7 @@ public class RegularExpressions {
     public static final String INT = "int",
                                 DOUBLE = "double",
                                 STRING = "String",
-                                CHAR = "chat",
+                                CHAR = "char",
                                 BOOLEAN = "boolean";
     public static final String  VOID = "void",
                                 FINAL = "final",

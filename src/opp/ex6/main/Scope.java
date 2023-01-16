@@ -59,7 +59,7 @@ public class Scope {
      * @param bufferedReader the buffer where will get all the lines from the file
      * @param map the map where we kept all the arguments
      * @param methods Arraylist that contain the function name and all of its elements
-     * @throws IOException
+     * @throws IOException, SjavacException
      */
     private static void compileIfWhile(String line, BufferedReader bufferedReader, HashMapVariable map,
                                        HashMap<String, ArrayList<String>> methods)

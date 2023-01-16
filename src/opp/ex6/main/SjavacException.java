@@ -27,6 +27,7 @@ public class SjavacException extends Exception{
     public static final String VAR_NOT_EXIST_ERR = "raise error: this variable does not exist: ";
     public static final String VAR_IS_NULL_ERR =  "raise error: this variable is not a initialized boolean: ";
     public static final String SYNTAX_ERR = "raise error: line does not fit the syntax: ";
+    public static final String NO_END_SCOPE_ERR = "raise error: end of file reached with no end of scope";
     public SjavacException(String message) {
         super(message);
     }

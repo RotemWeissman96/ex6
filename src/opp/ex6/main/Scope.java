@@ -49,8 +49,7 @@ public class Scope {
                 }
             }
         }
-        System.out.println("raise error: end of file reached with no end of scope");
-        return false;
+        throw new SjavacException(SjavacException.NO_END_SCOPE_ERR);
     }
 
     /**
@@ -77,7 +76,7 @@ public class Scope {
                 condition = checkValidConditionArgument(condition, map);
             }
         } else {
-            System.out.println("raise error: wrong if/while syntax: " + line);
+            throw new SjavacException(SjavacException.IF_WHILE_SYNTAX_ERR + line);
         }
         compileScope(bufferedReader, currMap, methods);
     }
